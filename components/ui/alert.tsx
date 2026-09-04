@@ -3,14 +3,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+// Alertas suaves: fondo tintado + ícono en color + texto oscuro (legible).
+// Cuatro tipos como en los mockups. Todo por tokens.
 const alertVariants = cva(
-  "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
+  "relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg~*]:pl-7",
   {
     variants: {
       variant: {
-        default: "bg-background text-foreground",
+        default: "border-border bg-card text-card-foreground [&>svg]:text-muted-foreground",
+        info: "border-primary/30 bg-accent text-foreground [&>svg]:text-primary",
+        success:
+          "border-success/30 bg-success/10 text-foreground [&>svg]:text-success",
+        warning:
+          "border-warning/40 bg-warning/10 text-foreground [&>svg]:text-warning",
         destructive:
-          "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+          "border-destructive/40 bg-destructive/10 text-foreground [&>svg]:text-destructive",
       },
     },
     defaultVariants: {

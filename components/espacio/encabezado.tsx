@@ -17,7 +17,10 @@ export function EncabezadoEspacio({
       <div className="flex min-w-0 items-center gap-3">
         <LockupMarca className="shrink-0" />
         <span aria-hidden className="hidden h-6 w-px bg-border sm:block" />
-        <span className="truncate text-sm text-muted-foreground">{titulo}</span>
+        {/* El título es redundante con el H1 de la página en móvil: solo desktop. */}
+        <span className="hidden truncate text-sm text-muted-foreground sm:inline">
+          {titulo}
+        </span>
       </div>
       <BotonCerrarSesion accion={accionCerrar} />
     </header>

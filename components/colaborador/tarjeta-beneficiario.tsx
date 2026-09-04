@@ -1,21 +1,19 @@
 import Link from "next/link";
-import { CheckCircle2, Gift, ChevronRight, Ticket } from "lucide-react";
+import { Gift, ChevronRight, Ticket } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ChipEstado } from "@/components/estado/chip-estado";
+import { AvatarInicial } from "@/components/estado/avatar-inicial";
 import type { BeneficiarioConEstado } from "@/lib/colaborador/datos";
 
 /**
- * Tarjeta de un hijo en "Mis beneficiarios". Estado diferenciado con icono +
- * texto (no solo color): Confirmado muestra el juguete y el código de entrega;
- * Pendiente muestra el botón para elegir. El estado nunca se comunica solo con
- * color, por accesibilidad.
+ * Tarjeta de un hijo en "Mis beneficiarios". Sin foto: avatar de iniciales con
+ * color por nombre (son menores). Estado con ícono + texto, nunca solo color.
  */
 export function TarjetaBeneficiario({ b }: { b: BeneficiarioConEstado }) {
   const confirmado = b.seleccion !== null;
@@ -23,20 +21,16 @@ export function TarjetaBeneficiario({ b }: { b: BeneficiarioConEstado }) {
   return (
     <Card>
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-lg">{b.nombre}</CardTitle>
-          {confirmado ? (
-            <Badge className="bg-success text-success-foreground hover:bg-success">
-              <CheckCircle2 className="mr-1 size-3.5" aria-hidden />
-              Confirmado
-            </Badge>
-          ) : (
-            <Badge variant="secondary">Pendiente</Badge>
-          )}
+        <div className="flex items-center gap-3">
+          <AvatarInicial nombre={b.nombre} className="size-12 text-base" />
+          <div className="min-w-0 flex-1">
+            <CardTitle className="truncate text-lg">{b.nombre}</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {b.edad} años · {b.genero}
+            </p>
+          </div>
+          <ChipEstado tipo={confirmado ? "confirmado" : "pendiente"} />
         </div>
-        <CardDescription>
-          {b.edad} años · {b.genero}
-        </CardDescription>
       </CardHeader>
       <CardContent>
         {confirmado && b.seleccion ? (
@@ -45,7 +39,7 @@ export function TarjetaBeneficiario({ b }: { b: BeneficiarioConEstado }) {
               <p className="text-sm text-muted-foreground">Regalo elegido</p>
               <p className="font-medium">{b.seleccion.producto}</p>
             </div>
-            <div className="rounded-md bg-muted p-3">
+            <div className="rounded-lg bg-muted p-3">
               <p className="text-xs text-muted-foreground">Código de entrega</p>
               <p className="font-mono text-lg font-semibold tracking-wider">
                 {b.seleccion.codigo_entrega}
