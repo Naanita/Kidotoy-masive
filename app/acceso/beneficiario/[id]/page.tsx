@@ -4,6 +4,8 @@ import { ChevronLeft, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Catalogo } from "@/components/colaborador/catalogo";
+import { Stepper } from "@/components/colaborador/stepper";
+import { IndicadorVivo } from "@/components/colaborador/indicador-vivo";
 import {
   obtenerBeneficiario,
   obtenerCatalogo,
@@ -50,17 +52,24 @@ export default async function PaginaCatalogo({
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-6">
-        <div className="mb-4">
-          <h1 className="text-xl font-semibold">
-            Catálogo para {beneficiario.nombre}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {beneficiario.edad} años · {beneficiario.genero} · 6 opciones
-          </p>
+        <div className="mx-auto mb-6 max-w-md">
+          <Stepper actual={2} />
+        </div>
+
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <h1 className="font-display text-2xl font-semibold text-foreground">
+              Elige un regalo para {beneficiario.nombre}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {beneficiario.edad} años · {beneficiario.genero} · 6 opciones
+            </p>
+          </div>
+          <IndicadorVivo />
         </div>
 
         {mensajeVentana && (
-          <Alert className="mb-4">
+          <Alert variant="warning" className="mb-4">
             <Clock className="size-4" aria-hidden />
             <AlertTitle>Periodo de selección</AlertTitle>
             <AlertDescription>{mensajeVentana}</AlertDescription>

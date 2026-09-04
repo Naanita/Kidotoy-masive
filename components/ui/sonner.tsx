@@ -1,31 +1,50 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import { Toaster as Sonner } from "sonner"
+import { useEffect, useState } from "react";
+import { Toaster as Sonner } from "sonner";
+import { CheckCircle2, TriangleAlert, XCircle, Info } from "lucide-react";
 
-type ToasterProps = React.ComponentProps<typeof Sonner>
+/**
+ * Notificaciones flotantes (DESIGN §4): fondo blanco, sombra media, borde
+ * izquierdo de color semántico, ícono, apilables, autocierre ~4.5 s.
+ * Posición: arriba a la derecha en escritorio, arriba centradas en móvil.
+ * Los errores de formulario NUNCA van aquí; van pegados al campo.
+ */
+export function Toaster() {
+  const [pos, setPos] = useState<"top-center" | "top-right">("top-center");
 
-const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 640px)");
+    const actualizar = () => setPos(mq.matches ? "top-right" : "top-center");
+    actualizar();
+    mq.addEventListener("change", actualizar);
+    return () => mq.removeEventListener("change", actualizar);
+  }, []);
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
-      className="toaster group"
+      position={pos}
+      duration={4500}
+      gap={8}
+      icons={{
+        success: <CheckCircle2 className="size-5 text-success" aria-hidden />,
+        error: <XCircle className="size-5 text-destructive" aria-hidden />,
+        warning: <TriangleAlert className="size-5 text-warning" aria-hidden />,
+        info: <Info className="size-5 text-primary" aria-hidden />,
+      }}
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+            "group flex w-full items-center gap-3 rounded-md border border-border border-l-4 bg-card px-4 py-3 text-card-foreground shadow-lg",
+          title: "font-heading text-sm font-semibold text-foreground",
+          description: "text-sm text-muted-foreground",
+          success: "!border-l-success",
+          error: "!border-l-destructive",
+          warning: "!border-l-warning",
+          info: "!border-l-primary",
+          closeButton: "text-muted-foreground",
         },
       }}
-      {...props}
     />
-  )
+  );
 }
-
-export { Toaster }

@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChipEstado } from "@/components/estado/chip-estado";
 import { AvatarInicial } from "@/components/estado/avatar-inicial";
+import { formatearCodigo } from "@/lib/format";
 import type { BeneficiarioConEstado } from "@/lib/colaborador/datos";
 
 /**
@@ -39,10 +40,10 @@ export function TarjetaBeneficiario({ b }: { b: BeneficiarioConEstado }) {
               <p className="text-sm text-muted-foreground">Regalo elegido</p>
               <p className="font-medium">{b.seleccion.producto}</p>
             </div>
-            <div className="rounded-lg bg-muted p-3">
+            <div className="rounded-lg bg-secondary p-3">
               <p className="text-xs text-muted-foreground">Código de entrega</p>
               <p className="font-mono text-lg font-semibold tracking-wider">
-                {b.seleccion.codigo_entrega}
+                {formatearCodigo(b.seleccion.codigo_entrega)}
               </p>
             </div>
             <Button asChild variant="outline" className="h-11 w-full">

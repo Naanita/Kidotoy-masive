@@ -24,15 +24,15 @@ export function SkeletonBeneficiarios({ n = 3 }: { n?: number }) {
 
 export function SkeletonCatalogo({ n = 6 }: { n?: number }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
       {Array.from({ length: n }).map((_, i) => (
-        <Card key={i}>
-          <CardContent className="p-3">
-            <Skeleton className="aspect-square w-full rounded-md" />
-            <Skeleton className="mt-3 h-4 w-3/4" />
+        <Card key={i} className="overflow-hidden">
+          <Skeleton className="aspect-square w-full rounded-none" />
+          <div className="p-3">
+            <Skeleton className="h-4 w-3/4" />
             <Skeleton className="mt-2 h-3 w-1/2" />
-            <Skeleton className="mt-3 h-11 w-full rounded-lg" />
-          </CardContent>
+            <Skeleton className="mt-3 h-11 w-full rounded-md" />
+          </div>
         </Card>
       ))}
     </div>

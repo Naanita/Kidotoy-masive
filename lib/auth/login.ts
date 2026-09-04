@@ -82,7 +82,7 @@ export async function accederColaborador(
   });
 
   if (!exitoso) return { error: MENSAJE_ACCESO_GENERICO };
-  redirect("/acceso/inicio");
+  redirect("/acceso/inicio?bienvenido=1");
 }
 
 /**
@@ -115,7 +115,7 @@ export async function accederConCorreo(
     await supabase.auth.signOut();
     return { error: MENSAJE_ACCESO_GENERICO };
   }
-  redirect(destino);
+  redirect(`${destino}?bienvenido=1`);
 }
 
 /** Cierra la sesión y vuelve a la página de login del espacio. */

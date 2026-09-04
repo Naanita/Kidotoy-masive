@@ -45,16 +45,15 @@ const fontSize: Record<string, [string, { lineHeight: string }]> = {
   "9xl": [pow(10), { lineHeight: "1" }],
 };
 
-// Sombras suaves y difusas, con opacidad derivada de --shadow-level (0 = ninguna).
-// Tono azulado (colores de marca) y radios de desenfoque amplios para el look
-// de los mockups.
-const sh = (a: number) => `hsl(214 40% 30% / calc(var(--shadow-level) * ${a}))`;
+// Sombras azuladas suaves y difusas (DESIGN §5): tinte #0B3A78, nunca negras.
+// La opacidad se deriva de --shadow-level (default 0.08 ≈ los valores de DESIGN).
+const sh = (a: number) => `rgb(11 58 120 / calc(var(--shadow-level) * ${a}))`;
 const boxShadow = {
-  sm: `0 1px 3px 0 ${sh(0.7)}`,
-  DEFAULT: `0 2px 8px -1px ${sh(1)}, 0 1px 3px -1px ${sh(0.7)}`,
-  md: `0 6px 16px -2px ${sh(1)}, 0 2px 6px -2px ${sh(0.7)}`,
-  lg: `0 12px 28px -4px ${sh(1)}, 0 4px 10px -4px ${sh(0.7)}`,
-  xl: `0 24px 48px -8px ${sh(1.1)}, 0 8px 18px -6px ${sh(0.7)}`,
+  sm: `0 1px 2px 0 ${sh(0.75)}`,
+  DEFAULT: `0 4px 12px -1px ${sh(1)}`,
+  md: `0 4px 12px -1px ${sh(1)}`,
+  lg: `0 8px 24px -2px ${sh(1.5)}`,
+  xl: `0 16px 48px -6px ${sh(2)}`,
   none: "none",
 };
 
@@ -117,8 +116,20 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Azules institucionales adicionales (fijos, ver DESIGN).
+        "primary-dark": "hsl(var(--primary-dark))",
+        "primary-deep": "hsl(var(--primary-deep))",
+        // Colores de marca Kidotoy (fijos, para tarjetas/chips/celebraciones).
+        kido: {
+          turquesa: "hsl(var(--kido-turquesa))",
+          rojo: "hsl(var(--kido-rojo))",
+          amarillo: "hsl(var(--kido-amarillo))",
+          morado: "hsl(var(--kido-morado))",
+          marino: "hsl(var(--kido-marino))",
+        },
       },
       fontFamily: {
+        display: ["var(--font-display)"],
         heading: ["var(--font-heading)"],
         body: ["var(--font-body)"],
         sans: ["var(--font-body)"],
@@ -127,11 +138,12 @@ const config: Config = {
         heading: "var(--font-weight-heading)" as unknown as string,
       },
       borderRadius: {
-        sm: "calc(var(--radius) - 4px)",
-        md: "calc(var(--radius) - 2px)",
+        // DESIGN §5: 6px chips · 8px botones/campos · 12px tarjetas · 20px héroe.
+        sm: "calc(var(--radius) - 6px)",
+        md: "calc(var(--radius) - 4px)",
         lg: "var(--radius)",
-        xl: "calc(var(--radius) + 4px)",
-        "2xl": "calc(var(--radius) + 8px)",
+        xl: "calc(var(--radius) + 8px)",
+        "2xl": "calc(var(--radius) + 16px)",
       },
       keyframes: {
         "accordion-down": {

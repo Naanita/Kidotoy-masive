@@ -5,13 +5,14 @@ import {
   Clock,
   PackageCheck,
   Package,
+  Tent,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Chip de estado, suave (fondo tintado + ícono + texto), como en los mockups.
- * El estado NUNCA se comunica solo con color: siempre lleva ícono y texto.
- * Colores por tokens (modificadores de opacidad sobre los colores de estado).
+ * Chip de estado (DESIGN §4): píldora con fondo del color al ~12%, texto y anillo
+ * en el color pleno, e ícono a la izquierda. El estado NUNCA se comunica solo con
+ * color: siempre lleva ícono y texto. Colores por tokens.
  */
 export type TipoEstado =
   | "disponible"
@@ -19,15 +20,17 @@ export type TipoEstado =
   | "agotado"
   | "confirmado"
   | "pendiente"
-  | "entregado";
+  | "entregado"
+  | "fuera_de_carpa";
 
 const ESTADOS = {
-  disponible: { icon: Package, clase: "bg-success/10 text-success ring-success/25", label: "Disponible" },
-  ultimas: { icon: TriangleAlert, clase: "bg-warning/15 text-warning ring-warning/30", label: "Últimas unidades" },
-  agotado: { icon: Ban, clase: "bg-destructive/10 text-destructive ring-destructive/25", label: "Agotado" },
-  confirmado: { icon: CheckCircle2, clase: "bg-success/10 text-success ring-success/25", label: "Confirmado" },
-  pendiente: { icon: Clock, clase: "bg-secondary text-secondary-foreground ring-primary/15", label: "Pendiente" },
-  entregado: { icon: PackageCheck, clase: "bg-success/10 text-success ring-success/25", label: "Entregado" },
+  disponible: { icon: Package, clase: "bg-success/15 text-success ring-success/40", label: "Disponible" },
+  ultimas: { icon: TriangleAlert, clase: "bg-warning/15 text-warning ring-warning/40", label: "Últimas unidades" },
+  agotado: { icon: Ban, clase: "bg-destructive/15 text-destructive ring-destructive/40", label: "Agotado" },
+  confirmado: { icon: CheckCircle2, clase: "bg-success/15 text-success ring-success/40", label: "Confirmado" },
+  pendiente: { icon: Clock, clase: "bg-accent text-primary ring-primary/25", label: "Pendiente" },
+  entregado: { icon: PackageCheck, clase: "bg-success/15 text-success ring-success/40", label: "Entregado" },
+  fuera_de_carpa: { icon: Tent, clase: "bg-kido-morado/15 text-kido-morado ring-kido-morado/40", label: "Fuera de carpa" },
 } as const;
 
 export function ChipEstado({

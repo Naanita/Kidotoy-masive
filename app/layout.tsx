@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   Inter,
   Montserrat,
+  Fredoka,
   Plus_Jakarta_Sans,
   Manrope,
   Source_Sans_3,
@@ -9,7 +10,9 @@ import {
   Outfit,
   Figtree,
 } from "next/font/google";
+import { Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { ToastBienvenida } from "@/components/estado/toast-bienvenida";
 import { BannerDemostracion } from "@/components/banner-demostracion";
 import { obtenerConfigPublica } from "@/lib/theme/config";
 import { construirEstiloTema } from "@/lib/theme/serialize";
@@ -20,11 +23,16 @@ import "./globals.css";
 export const revalidate = 300;
 
 // Fuentes por defecto (identidad Acueducto/Kidotoy): se precargan.
-// Montserrat para títulos, Inter para cuerpo (sustituto de Helvetica Neue).
+// Inter (cuerpo), Montserrat (títulos), Fredoka (display, momentos de alegría).
 const fontBody = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const fontHeading = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
+});
+const fontDisplay = Fredoka({
+  subsets: ["latin"],
+  variable: "--font-fredoka",
   display: "swap",
 });
 
@@ -40,6 +48,7 @@ const fontFigtree = Figtree({ subsets: ["latin"], display: "swap", preload: fals
 const FONT_VARS = [
   fontBody,
   fontHeading,
+  fontDisplay,
   fontJakarta,
   fontManrope,
   fontSource,
@@ -80,6 +89,9 @@ export default async function RootLayout({
         {config.banner_demo && <BannerDemostracion />}
         {children}
         <Toaster />
+        <Suspense fallback={null}>
+          <ToastBienvenida />
+        </Suspense>
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import { CheckCircle2, Inbox } from "lucide-react";
 import { EncabezadoEspacio } from "@/components/espacio/encabezado";
 import { TarjetaBeneficiario } from "@/components/colaborador/tarjeta-beneficiario";
+import { Stepper } from "@/components/colaborador/stepper";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { obtenerBeneficiarios } from "@/lib/colaborador/datos";
 import { salirAcceso } from "../actions";
@@ -28,8 +29,12 @@ export default async function PaginaInicioColaborador() {
           </div>
         ) : (
           <>
+            <div className="mx-auto mb-6 max-w-md">
+              <Stepper actual={1} />
+            </div>
+
             <div className="mb-4">
-              <h1 className="text-xl font-semibold">
+              <h1 className="font-display text-2xl font-semibold text-foreground">
                 Elige el regalo de cada uno
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -40,7 +45,7 @@ export default async function PaginaInicioColaborador() {
             </div>
 
             {todosConfirmados && (
-              <Alert className="mb-4">
+              <Alert variant="success" className="mb-4">
                 <CheckCircle2 className="size-4" aria-hidden />
                 <AlertTitle>¡Listo! Terminaste la selección</AlertTitle>
                 <AlertDescription>

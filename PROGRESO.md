@@ -553,6 +553,35 @@ encabezado del colaborador; solo Kidotoy en el panel. **Pendiente:** vectoriales
 Subido a **github.com/Naanita/Kidotoy-masive** (rama main). `.env.local` y secretos NO
 versionados (verificado); `.env.example` solo con placeholders.
 
+### 8.3 · Rediseño con dirección de Stitch — espacio del colaborador ✅ (2026-09-03)
+
+Fuente de verdad: **DESIGN.md** (raíz). El HTML de Stitch NO estaba en el repo (solo llegó
+DESIGN.md); se usó DESIGN.md + los 4 mockups + la lista explícita de "lo que sí quiero".
+
+- **Fundación de tokens a DESIGN**: fondo blanco dominante, texto #333, borde #EDEDED,
+  advertencia #F4A612 y error #E23C3D (Kidotoy). Colores de marca Kidotoy como variables
+  fijas (`--kido-*`, `--primary-dark/deep`), no en el panel de temas (como el logo). Radios
+  8px botones / 12px tarjetas, sombras azuladas (#0B3A78) suaves derivadas de `--shadow-level`.
+  `globals.css` y `defaults.ts` sincronizados; `prefers-reduced-motion` global.
+- **Fredoka** cargada (next/font) para momentos de alegría (`font-display`): saludo,
+  títulos de catálogo, nombres de juguete, pantalla de éxito. Montserrat títulos, Inter cuerpo.
+- **Toasts** (sonner) según DESIGN: blanco, borde izquierdo semántico, ícono, arriba-derecha
+  en escritorio / arriba-centro en móvil, autocierre ~4.5 s. Disparan "Sesión iniciada"
+  (login) y "Código copiado" (comprobante). Errores de formulario siguen pegados al campo.
+- **Espacio del colaborador**: stepper de 4 pasos (Beneficiarios→Elegir→Confirmación→
+  Comprobante), catálogo 2 col móvil / 3 escritorio con chip flotante, indicador en vivo
+  (punto pulsante), tarjeta agotada (imagen al 45% + chip rojo + botón deshabilitado, nunca
+  oculta), aviso de confirmación con borde izquierdo, comprobante con Fredoka + código en
+  grupos + botón copiar + celebración. Skeletons de carga.
+- **Rechazado de los mockups/Stitch** (no construido): añadir hijo, fotos de menores,
+  recordar datos, navegación inferior/menús inventados, campana, chips Premium, superposición
+  "sin cupos", pie con Términos, su paleta, rangos de edad, datos falsos (Carlos Mendoza,
+  2024, Simón Bolívar). Datos reales de la base.
+- **Bug corregido**: la fecha del evento salía un día antes (fecha "solo día" parseada como
+  UTC, zona -5 rodaba al día anterior). `formatearFecha` la ancla al mediodía.
+- Sin lógica de negocio tocada. `typecheck` + `build` limpios, tokens sin hardcodear.
+  Verificado en pantalla el flujo completo del colaborador.
+
 ### Pantallas de los mockups que NO se construyen sin confirmación (regla #6)
 
 Gráficas del panel (incl. "inventario por categoría" — no existe el campo categoría);

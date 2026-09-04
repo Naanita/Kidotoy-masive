@@ -5,22 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  // Radio generoso, foco visible (ring-2 + offset), micro-interacción al presionar,
-  // transiciones cortas. Todo por tokens.
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  // Radio 8px, foco visible (ring-2 + offset), micro-interacción al presionar.
+  // Deshabilitado en gris (superficie + texto apagado), no solo opacidad.
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:pointer-events-none disabled:border-transparent disabled:bg-secondary disabled:text-muted-foreground disabled:shadow-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        // Primario: azul sólido de marca.
+        // Primario: azul sólido, hover a primario oscuro.
         default:
-          "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
-        // Peligro: liberar, revertir, agotado.
+          "bg-primary text-primary-foreground shadow-sm hover:bg-primary-dark",
+        // Peligro: liberar, revertir. Solo acciones irreversibles.
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-        // Secundario de los mockups: contorno azul.
+        // Secundario: blanco con contorno azul.
         outline:
-          "border-2 border-primary/50 bg-card text-primary shadow-sm hover:border-primary hover:bg-accent",
-        // Superficie suave (chips de acción, filtros).
+          "border border-primary bg-card text-primary shadow-sm hover:bg-accent hover:text-primary-dark",
+        // Superficie suave (filtros, chips de acción).
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/70",
         // Terciario: texto/fantasma.
@@ -28,10 +28,10 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-5 py-2",
-        sm: "h-9 rounded-md px-3.5 text-xs",
+        default: "h-11 px-5 py-2",
+        sm: "h-9 px-3.5 text-xs",
         lg: "h-12 px-8 text-base",
-        icon: "size-10",
+        icon: "size-11",
       },
     },
     defaultVariants: {

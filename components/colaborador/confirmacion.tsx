@@ -61,7 +61,7 @@ export function Confirmacion({
           <p className="text-sm text-muted-foreground">
             Para {beneficiario.nombre}
           </p>
-          <h2 className="font-heading text-lg font-semibold">
+          <h2 className="font-display text-xl font-semibold text-foreground">
             {producto.nombre}
           </h2>
           {producto.descripcion && (
@@ -72,7 +72,7 @@ export function Confirmacion({
         </div>
       </div>
 
-      <Alert>
+      <Alert variant="warning">
         <TriangleAlert className="size-4" aria-hidden />
         <AlertTitle>Esta elección no se puede cambiar</AlertTitle>
         <AlertDescription>

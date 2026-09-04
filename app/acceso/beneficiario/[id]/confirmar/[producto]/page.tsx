@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confirmacion } from "@/components/colaborador/confirmacion";
+import { Stepper } from "@/components/colaborador/stepper";
 import {
   obtenerBeneficiario,
   obtenerComprobante,
@@ -49,6 +50,9 @@ export default async function PaginaConfirmar({
       </header>
 
       <main className="mx-auto max-w-md px-4 py-6">
+        <div className="mb-6">
+          <Stepper actual={3} />
+        </div>
         <h1 className="mb-5 text-xl font-semibold">Confirma tu elección</h1>
         <Confirmacion
           accion={confirmarSeleccion}

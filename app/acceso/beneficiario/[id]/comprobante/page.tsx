@@ -11,9 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { QrEntrega } from "@/components/colaborador/qr-entrega";
+import { BotonCopiarCodigo } from "@/components/colaborador/boton-copiar";
+import { Stepper } from "@/components/colaborador/stepper";
 import { obtenerComprobante } from "@/lib/colaborador/datos";
 import { obtenerVentana } from "@/lib/campana/ventana";
-import { formatearFecha } from "@/lib/format";
+import { formatearFecha, formatearCodigo } from "@/lib/format";
 
 export default async function PaginaComprobante({
   params,
@@ -40,27 +42,43 @@ export default async function PaginaComprobante({
         </Button>
       </header>
 
-      <main className="mx-auto max-w-md px-4 py-6 text-center">
-        <CheckCircle2 className="mx-auto size-12 text-success" aria-hidden />
-        <h1 className="mt-3 text-2xl font-bold">Regalo confirmado</h1>
-        <p className="text-muted-foreground">{comprobante.beneficiario}</p>
+      <main className="mx-auto max-w-md px-4 py-6">
+        <div className="mb-6">
+          <Stepper actual={4} />
+        </div>
+
+        <div className="text-center">
+          <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-success/15 motion-safe:animate-in motion-safe:zoom-in-75 motion-safe:duration-500">
+            <CheckCircle2 className="size-10 text-success" aria-hidden />
+          </span>
+          <h1 className="mt-4 font-display text-3xl font-bold text-foreground">
+            ¡Regalo confirmado!
+          </h1>
+          <p className="mt-1 text-muted-foreground">{comprobante.beneficiario}</p>
+        </div>
 
         <Card className="mt-6 text-left">
           <CardContent className="space-y-5 p-6">
             <div>
               <p className="text-sm text-muted-foreground">Juguete</p>
-              <p className="font-medium">{comprobante.producto}</p>
+              <p className="font-display text-lg font-semibold">
+                {comprobante.producto}
+              </p>
             </div>
 
             <div className="flex justify-center">
               <QrEntrega value={comprobante.codigo_entrega} />
             </div>
 
-            <div className="text-center">
+            <div className="rounded-lg bg-secondary p-4 text-center">
               <p className="text-sm text-muted-foreground">Código de entrega</p>
-              <p className="font-mono text-2xl font-bold tracking-widest">
-                {comprobante.codigo_entrega}
+              <p className="mt-1 font-mono text-2xl font-bold tracking-[0.15em] text-foreground">
+                {formatearCodigo(comprobante.codigo_entrega)}
               </p>
+              <BotonCopiarCodigo
+                codigo={comprobante.codigo_entrega}
+                className="mt-3 h-10"
+              />
             </div>
           </CardContent>
         </Card>
@@ -82,7 +100,7 @@ export default async function PaginaComprobante({
           </div>
         )}
 
-        <Alert className="mt-6 text-left">
+        <Alert variant="info" className="mt-6">
           <Ticket className="size-4" aria-hidden />
           <AlertDescription>
             Presenta este código (o el QR) el día del evento para reclamar el
