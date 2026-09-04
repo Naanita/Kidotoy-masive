@@ -524,6 +524,35 @@ ninguna regla de negocio. Los mockups definen los **valores por defecto de los t
 > (rana + "Agua y Alcantarillado de Bogotá") los debe entregar el cliente. Hoy Kidotoy es
 > un wordmark propio y Acueducto va como texto de marcador.
 
+### 8.2 · Componentes compartidos — ✅ (2026-09-02)
+
+- **Botones**: 4 variantes (primario sólido, secundario contorno azul, terciario texto,
+  destructivo) con sus estados (hover, focus-visible con ring+offset, active, disabled,
+  loading), radio generoso, sombra suave.
+- **Inputs**: 44px, radio generoso, borde+ring azul al enfocar.
+- **Alertas**: suaves y tintadas, 4 tipos (info/éxito/advertencia/error) con ícono en color.
+- **Chip de estado** (`ChipEstado`): disponible/últimas/agotado/confirmado/pendiente/
+  entregado, con **ícono + texto** (nunca solo color).
+- **Avatar de iniciales** (`AvatarInicial`): color estable por nombre, **sin fotos de
+  menores** (regla #2). Excepción de color documentada, como el logo.
+- **Skeletons** para beneficiarios, catálogo, tablas y métricas.
+- Tarjetas de **producto** y **beneficiario** refactorizadas a estos componentes.
+- Verificado: `typecheck` + `build` limpios; **sin colores hardcodeados** (solo logo y
+  avatar como excepciones inline). Screenshots del catálogo y beneficiarios confirman la
+  identidad.
+
+### Logos oficiales
+
+Reemplazado el wordmark propio por los PNG oficiales en `public/logos/`. Componente con
+fuente única (swappable a vector), slot de modo oscuro (hoy = mismo archivo) y tope de
+tamaño para Acueducto (baja resolución, 500×124). Lockup acueducto | kidotoy en login y
+encabezado del colaborador; solo Kidotoy en el panel. **Pendiente:** vectoriales oficiales.
+
+### Repositorio
+
+Subido a **github.com/Naanita/Kidotoy-masive** (rama main). `.env.local` y secretos NO
+versionados (verificado); `.env.example` solo con placeholders.
+
 ### Pantallas de los mockups que NO se construyen sin confirmación (regla #6)
 
 Gráficas del panel (incl. "inventario por categoría" — no existe el campo categoría);
