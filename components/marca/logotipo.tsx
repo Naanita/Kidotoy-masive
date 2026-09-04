@@ -1,64 +1,92 @@
-import { Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Logotipo de Kidotoy: wordmark de identidad de marca.
+ * Logotipos oficiales (PNG con fondo transparente, colores fijos de marca).
  *
- * Sus colores son FIJOS a propósito — son la identidad de Kidotoy, no tokens del
- * tema. Igual que el QR, es una excepción deliberada a "todo por tokens": un logo
- * no debe recolorearse cuando se cambia el color primario desde /dev/tema.
+ * FUENTE ÚNICA: para cambiar un archivo (p. ej. al llegar los vectoriales SVG),
+ * se edita SOLO este objeto; nada más en la app hay que tocar.
  *
- * Nota de producción: reemplazar por el logo vectorial oficial de Kidotoy cuando
- * se tenga el asset. El de Acueducto (rana + "Agua y Alcantarillado de Bogotá")
- * es del cliente y debe entregarlo el cliente; aquí va como texto de marcador.
+ * - `srcDark`: variante para fondo oscuro. Hoy apunta al mismo archivo; cuando
+ *   se tenga una versión clara del logo para oscuro, se cambia aquí.
+ * - `alto`/`ancho`: dimensiones intrínsecas, para reservar espacio (sin layout
+ *   shift) y calcular el aspecto.
+ * - `maxAlto`: el de Acueducto viene en baja resolución (500×124); se limita su
+ *   altura para que nunca se vea pixelado. Quitar el tope al llegar el vectorial.
  */
-const COLORES_KIDOTOY = [
-  "#007BFF", // k
-  "#7E57C2", // i
-  "#FF4D4F", // d
-  "#FFC107", // o
-  "#00C9A7", // t
-  "#1361C5", // o
-  "#7E57C2", // y
-];
+const LOGOS = {
+  kidotoy: {
+    src: "/logos/kidotoy.png",
+    srcDark: "/logos/kidotoy.png",
+    ancho: 1469,
+    alto: 539,
+    alt: "Kidotoy",
+    maxAlto: undefined as string | undefined,
+  },
+  acueducto: {
+    src: "/logos/acueducto.png",
+    srcDark: "/logos/acueducto.png",
+    ancho: 500,
+    alto: 124,
+    alt: "Acueducto · Agua y Alcantarillado de Bogotá",
+    maxAlto: "max-h-9", // baja resolución: no crecer más allá de ~36px de alto
+  },
+} as const;
 
-export function MarcaKidotoy({ className }: { className?: string }) {
+type Marca = keyof typeof LOGOS;
+
+/**
+ * Un logo. `alturaClase` controla el tamaño (h-*). Renderiza la variante clara
+ * y la oscura; la oscura solo se ve bajo `.dark` (hoy es el mismo archivo).
+ */
+function Logo({
+  marca,
+  alturaClase,
+  className,
+}: {
+  marca: Marca;
+  alturaClase: string;
+  className?: string;
+}) {
+  const l = LOGOS[marca];
+  const comun = cn("w-auto object-contain", alturaClase, l.maxAlto);
   return (
-    <span
-      className={cn(
-        "inline-flex select-none items-center font-heading text-2xl font-extrabold tracking-tight",
-        className,
-      )}
-      aria-label="Kidotoy"
-    >
-      <Crown
-        className="mr-[0.1em] size-[0.72em] -translate-y-[0.28em]"
-        style={{ color: "#FFC107", fill: "#FFC107" }}
-        aria-hidden
+    <span className={cn("inline-flex", className)}>
+      {/* eslint-disable @next/next/no-img-element */}
+      <img
+        src={l.src}
+        width={l.ancho}
+        height={l.alto}
+        alt={l.alt}
+        className={cn(comun, "dark:hidden")}
       />
-      {"kidotoy".split("").map((letra, i) => (
-        <span key={i} style={{ color: COLORES_KIDOTOY[i] }}>
-          {letra}
-        </span>
-      ))}
+      <img
+        src={l.srcDark}
+        width={l.ancho}
+        height={l.alto}
+        alt=""
+        aria-hidden
+        className={cn(comun, "hidden dark:block")}
+      />
+      {/* eslint-enable @next/next/no-img-element */}
     </span>
   );
 }
 
+/** Solo el logo de Kidotoy (para el panel de administración). */
+export function MarcaKidotoy({ className }: { className?: string }) {
+  return <Logo marca="kidotoy" alturaClase="h-7" className={className} />;
+}
+
 /**
- * Lockup co-marca Acueducto | Kidotoy para encabezados y logins.
- * "acueducto" va como texto de marcador hasta tener el logo oficial del cliente.
+ * Lockup co-marca: acueducto | kidotoy, con un separador discreto.
+ * Para el login y el encabezado del espacio del colaborador.
  */
 export function LockupMarca({ className }: { className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span className="font-heading text-lg font-bold lowercase tracking-tight text-primary">
-        acueducto
-      </span>
-      <span aria-hidden className="text-xl font-light text-border">
-        |
-      </span>
-      <MarcaKidotoy className="text-lg" />
+    <span className={cn("inline-flex items-center gap-3", className)}>
+      <Logo marca="acueducto" alturaClase="h-7" />
+      <span aria-hidden className="h-7 w-px bg-border" />
+      <Logo marca="kidotoy" alturaClase="h-7" />
     </span>
   );
 }
