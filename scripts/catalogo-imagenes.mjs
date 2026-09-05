@@ -5,8 +5,8 @@
 //  navegador. Es una herramienta de línea de comandos.
 //
 //  Lleva las fichas de producto de Kidotoy al catálogo:
-//    1. Recorta el producto de la ficha (quita marco, logo y pie de texto)
-//       y lo deja cuadrado 800×800 sobre blanco, en WebP + JPG de respaldo.
+//    1. Prepara la imagen a 800×800, WebP + JPG de respaldo. Por defecto sube
+//       la FICHA COMPLETA (con su franja de color); ver la constante MODO.
 //    2. Arma una hoja de contacto para revisar antes de subir nada.
 //    3. Empareja cada imagen con las referencias del catálogo POR SKU.
 //    4. Con --aplicar: crea el bucket, sube y actualiza productos.imagen_url.
@@ -48,6 +48,21 @@ const CALIDAD_JPG = 80;
 const PESO_OBJETIVO_KB = 120;
 
 const aplicar = process.argv.includes("--aplicar");
+
+/**
+ * Qué se sube como foto de catálogo:
+ *
+ *  "ficha"    — la ficha COMPLETA de Kidotoy, tal como la entregaron: su franja
+ *               de color, el logo, el producto y el pie con SKU, nombre y
+ *               medidas. Solo se optimiza (800×800, WebP + JPG). ES EL MODO
+ *               ACTIVO: el cliente pidió conservar la franja.
+ *  "producto" — solo el juguete recortado sobre blanco, sin marco, logo ni pie.
+ *
+ * Cambiar esta constante y volver a correr con --aplicar reemplaza los objetos
+ * en Storage (mismo nombre, upsert), así que se puede ir y volver sin romper
+ * nada: las URLs no cambian y la base no hay que tocarla.
+ */
+const MODO = "ficha";
 
 // ---------------------------------------------------------------------
 //  Geometría de la ficha (medida sobre las 23 fichas, todas 1080×1080)
@@ -215,6 +230,20 @@ async function recortarFicha(archivo, overrides) {
     .toColourspace("srgb")
     .raw({ depth: "uchar" })
     .toBuffer({ resolveWithObject: true });
+
+  // Modo "ficha": no se recorta nada, solo se optimiza. La plantilla ES la
+  // imagen que el cliente quiere ver en el catálogo.
+  if (MODO === "ficha" && !overrides[archivo]) {
+    const entera = sharp(ruta)
+      .flatten({ background: "#ffffff" })
+      .resize(LADO, LADO, { fit: "contain", background: "#ffffff" });
+    return {
+      archivo,
+      origen: "ficha completa",
+      webp: await entera.clone().webp({ quality: CALIDAD_WEBP, effort: 6 }).toBuffer(),
+      jpg: await entera.clone().jpeg({ quality: CALIDAD_JPG, mozjpeg: true }).toBuffer(),
+    };
+  }
 
   const manual = overrides[archivo];
   let caja, origen;

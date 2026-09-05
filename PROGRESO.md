@@ -878,6 +878,20 @@ descartan los que son plantilla. Tres cosas que costaron y quedan anotadas:
    clarísimo detrás; a 12 ese device tocaba el texto del pie, los dos formaban UN componente
    que ya no era pálido ni cabía bajo el corte del pie, y sobrevivía estirando la caja.
 
+**CAMBIO POSTERIOR (2026-09-05): se sube la FICHA COMPLETA, con su franja.** El cliente
+pidió conservar la franja de color de la ficha, así que el catálogo ya no muestra el
+juguete recortado sobre blanco sino la ficha tal como la entregó Kidotoy: franja, logo,
+producto y pie con SKU, nombre y medidas. Lo gobierna la constante `MODO` en
+`scripts/catalogo-imagenes.mjs` (`"ficha"` | `"producto"`); cambiarla y volver a correr con
+`--aplicar` reemplaza los objetos en Storage con el mismo nombre, así que se puede ir y
+volver sin tocar la base ni romper URLs.
+
+> **Ojo con la duplicación:** la ficha ya trae impresos el SKU, el nombre y las medidas, y
+> la tarjeta del catálogo los vuelve a mostrar debajo. Queda a decisión del cliente si se
+> ocultan los de la tarjeta.
+
+Todo lo que sigue describe el modo `"producto"`, que queda disponible pero no activo.
+
 **Decisión sobre la miniatura de la caja: se conserva.** Aparece en 13 de 23 fichas y en las
 otras 10 no existe en el original. No es removible automáticamente sin destrozar varias: en
 Carro Drift, Carruaje, Silla mecedora y Tocador la caja es tan protagonista como el juguete,
