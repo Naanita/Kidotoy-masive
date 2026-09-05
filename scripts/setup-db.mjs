@@ -20,6 +20,7 @@
 // =====================================================================
 
 import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import pg from "pg";
@@ -40,19 +41,31 @@ if (!DB_URL) {
 const here = path.dirname(fileURLToPath(import.meta.url));
 const supabaseDir = path.join(here, "..", "supabase");
 
+// 05-storage: bucket y políticas de las fotos del catálogo.
+// 06-imagenes: OPCIONAL. Lo genera `npm run catalogo:imagenes -- --aplicar` y
+// devuelve las URLs de las fotos, que el seed reinserta en null. Si no existe
+// todavía, se salta: el catálogo queda sin fotos y cae al preview de marca.
 const FILES = [
   "01-schema.sql",
   "02-rls.sql",
   "03-funciones.sql",
   "04-seed.sql",
+  "05-storage.sql",
+  "06-imagenes.sql",
 ];
+const OPCIONALES = new Set(["06-imagenes.sql"]);
 
 // Teardown: deja la base limpia para que la corrida sea reproducible.
-// El cascade se lleva índices, políticas y vistas dependientes.
+// El cascade se lleva índices, políticas y vistas dependientes, pero NO las
+// tablas que apuntan a la que se borra: por eso hay que listar TODAS las tablas
+// del proyecto, incluidas las de la era carpas (carpas, carpa_referencias,
+// operarios). Si falta alguna, sobrevive al teardown y 01-schema.sql choca al
+// recrearla ("relation ... already exists").
 const TEARDOWN = `
   drop table if exists
     entregas, selecciones, beneficiarios, productos,
-    colaboradores, intentos_acceso, auditoria, tema, empresas
+    colaboradores, intentos_acceso, auditoria, tema,
+    operarios, carpa_referencias, carpas, empresas
   cascade;
 `;
 
@@ -80,7 +93,12 @@ async function main() {
     log("  OK\n");
 
     for (const file of FILES) {
-      const sql = await readFile(path.join(supabaseDir, file), "utf8");
+      const ruta = path.join(supabaseDir, file);
+      if (OPCIONALES.has(file) && !existsSync(ruta)) {
+        log(`▶ ${file} … no existe todavía, se salta`);
+        continue;
+      }
+      const sql = await readFile(ruta, "utf8");
       process.stdout.write(`▶ ${file} … `);
       try {
         await client.query(sql);
@@ -117,7 +135,8 @@ async function main() {
       client,
       "select count(*)::int as n from productos",
     );
-    results.push(["productos = 36", prod === 36, `= ${prod}`]);
+    // Catálogo-muestra: 24 referencias (4 grupos de 6). Producción son 168.
+    results.push(["productos = 24", prod === 24, `= ${prod}`]);
 
     const emp = await scalar(
       client,

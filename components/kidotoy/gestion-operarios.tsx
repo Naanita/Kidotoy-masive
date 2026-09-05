@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Loader2, UserPlus } from "lucide-react";
+import { Loader2, UserPlus, RefreshCw, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,6 +37,14 @@ import type { CarpaConfig, OperarioConfig } from "@/lib/kidotoy/carpas";
 
 const SIN = "sin";
 
+/** Contraseña legible al azar (sin caracteres ambiguos). Visible, nunca a ciegas. */
+function generarPassword(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  const arr = new Uint32Array(10);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, (n) => chars[n % chars.length]).join("");
+}
+
 export function GestionOperarios({
   operarios,
   carpas,
@@ -52,6 +60,18 @@ export function GestionOperarios({
   const [password, setPassword] = useState("");
   const [carpaId, setCarpaId] = useState(SIN);
   const [error, setError] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState(false);
+
+  async function copiarPassword() {
+    try {
+      await navigator.clipboard.writeText(password);
+      setCopiado(true);
+      toast.success("Contraseña copiada", { description: "Entrégasela al operario." });
+      setTimeout(() => setCopiado(false), 2000);
+    } catch {
+      toast.error("No se pudo copiar", { description: "Cópiala a mano." });
+    }
+  }
 
   function crear() {
     setError(null);
@@ -113,7 +133,45 @@ export function GestionOperarios({
               </div>
               <div className="space-y-1">
                 <Label htmlFor="op-pass">Contraseña (mín. 8)</Label>
-                <Input id="op-pass" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <div className="flex gap-2">
+                  <Input
+                    id="op-pass"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="flex-1 font-mono"
+                    autoComplete="off"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPassword(generarPassword())}
+                  >
+                    <RefreshCw className="mr-1.5 size-3.5" aria-hidden />
+                    Generar
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={copiarPassword}
+                    disabled={!password}
+                    aria-label="Copiar contraseña"
+                  >
+                    {copiado ? (
+                      <Check className="size-3.5 text-success" aria-hidden />
+                    ) : (
+                      <Copy className="size-3.5" aria-hidden />
+                    )}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  El operario la usa para entrar al módulo de entrega.{" "}
+                  <span className="font-medium text-foreground">
+                    Cópiala y entrégasela
+                  </span>{" "}
+                  — no se vuelve a mostrar después.
+                </p>
               </div>
               <div className="space-y-1">
                 <Label>Carpa</Label>

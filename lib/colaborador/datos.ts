@@ -19,7 +19,11 @@ export interface Beneficiario {
 }
 
 export interface BeneficiarioConEstado extends Beneficiario {
-  seleccion: { codigo_entrega: string; producto: string } | null;
+  seleccion: {
+    codigo_entrega: string;
+    producto: string;
+    imagenUrl: string | null;
+  } | null;
 }
 
 export interface Producto {
@@ -49,7 +53,9 @@ export async function obtenerBeneficiarios(): Promise<BeneficiarioConEstado[]> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("beneficiarios")
-    .select("id, nombre, edad, genero, selecciones(codigo_entrega, productos(nombre))")
+    .select(
+      "id, nombre, edad, genero, selecciones(codigo_entrega, productos(nombre, imagen_url))",
+    )
     .order("edad", { ascending: true })
     .order("nombre", { ascending: true });
 
@@ -66,17 +72,44 @@ export async function obtenerBeneficiarios(): Promise<BeneficiarioConEstado[]> {
     const s = unoDeRelacion(b.selecciones) as
       | { codigo_entrega: string; productos: unknown }
       | null;
-    const prod = s ? (unoDeRelacion(s.productos) as { nombre: string } | null) : null;
+    const prod = s
+      ? (unoDeRelacion(s.productos) as {
+          nombre: string;
+          imagen_url: string | null;
+        } | null)
+      : null;
     return {
       id: b.id,
       nombre: b.nombre,
       edad: b.edad,
       genero: b.genero,
       seleccion: s
-        ? { codigo_entrega: s.codigo_entrega, producto: prod?.nombre ?? "" }
+        ? {
+            codigo_entrega: s.codigo_entrega,
+            producto: prod?.nombre ?? "",
+            imagenUrl: prod?.imagen_url ?? null,
+          }
         : null,
     };
   });
+}
+
+export interface ColaboradorActual {
+  nombre: string;
+  area: string | null;
+}
+
+/**
+ * El colaborador de la sesión. RLS (colab_propio: auth_user_id = auth.uid())
+ * acota a su propia fila, así que basta con leer una. Para el saludo.
+ */
+export async function obtenerColaborador(): Promise<ColaboradorActual | null> {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("colaboradores")
+    .select("nombre, area")
+    .maybeSingle();
+  return (data as ColaboradorActual | null) ?? null;
 }
 
 export async function obtenerBeneficiario(

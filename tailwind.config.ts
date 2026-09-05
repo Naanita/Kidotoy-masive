@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 /**
  * Todo el estilo se lee desde variables CSS (convención shadcn). El panel
@@ -117,15 +118,25 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         // Azules institucionales adicionales (fijos, ver DESIGN).
-        "primary-dark": "hsl(var(--primary-dark))",
         "primary-deep": "hsl(var(--primary-deep))",
+        "acueducto-azul": "hsl(var(--acueducto-azul))",
+        "acueducto-azul-vivo": "hsl(var(--acueducto-azul-vivo))",
+        "acueducto-lienzo": "hsl(var(--acueducto-lienzo))",
+        "acueducto-campo": "hsl(var(--acueducto-campo))",
+        "acueducto-pildora": "hsl(var(--acueducto-pildora))",
+        "gris-decorativo": "hsl(var(--gris-decorativo))",
         // Colores de marca Kidotoy (fijos, para tarjetas/chips/celebraciones).
+        // Los *-claro son el tinte de la silueta sobre cada tarjeta.
         kido: {
           turquesa: "hsl(var(--kido-turquesa))",
           rojo: "hsl(var(--kido-rojo))",
           amarillo: "hsl(var(--kido-amarillo))",
           morado: "hsl(var(--kido-morado))",
           marino: "hsl(var(--kido-marino))",
+          "turquesa-claro": "hsl(var(--kido-turquesa-claro))",
+          "morado-claro": "hsl(var(--kido-morado-claro))",
+          "rojo-claro": "hsl(var(--kido-rojo-claro))",
+          "marino-claro": "hsl(var(--kido-marino-claro))",
         },
       },
       fontFamily: {
@@ -161,7 +172,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 };
 
 export default config;

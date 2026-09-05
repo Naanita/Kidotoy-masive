@@ -1,58 +1,43 @@
-import {
-  CheckCircle2,
-  TriangleAlert,
-  Ban,
-  Clock,
-  PackageCheck,
-  Package,
-  Tent,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BarraEstado } from "@/components/estado/barra-estado";
+import { ESTADO_VISUAL, type TipoEstado } from "@/components/estado/config-estado";
+
+export type { TipoEstado };
 
 /**
- * Chip de estado (DESIGN §4): píldora con fondo del color al ~12%, texto y anillo
- * en el color pleno, e ícono a la izquierda. El estado NUNCA se comunica solo con
- * color: siempre lleva ícono y texto. Colores por tokens.
+ * Chip de estado. Píldora con fondo tenue del color y, como tope izquierdo, la
+ * barra del gesto (misma cápsula que alertas, toasts y stepper). El estado nunca
+ * se comunica solo con color: siempre lleva ícono + texto. Colores por tokens.
+ *
+ * `solido`: fondo opaco (blanco) en vez de tinte, para cuando el chip flota sobre
+ * una imagen y un tinte translúcido no se leería. El color sigue en texto y barra.
  */
-export type TipoEstado =
-  | "disponible"
-  | "ultimas"
-  | "agotado"
-  | "confirmado"
-  | "pendiente"
-  | "entregado"
-  | "fuera_de_carpa";
-
-const ESTADOS = {
-  disponible: { icon: Package, clase: "bg-success/15 text-success ring-success/40", label: "Disponible" },
-  ultimas: { icon: TriangleAlert, clase: "bg-warning/15 text-warning ring-warning/40", label: "Últimas unidades" },
-  agotado: { icon: Ban, clase: "bg-destructive/15 text-destructive ring-destructive/40", label: "Agotado" },
-  confirmado: { icon: CheckCircle2, clase: "bg-success/15 text-success ring-success/40", label: "Confirmado" },
-  pendiente: { icon: Clock, clase: "bg-accent text-primary ring-primary/25", label: "Pendiente" },
-  entregado: { icon: PackageCheck, clase: "bg-success/15 text-success ring-success/40", label: "Entregado" },
-  fuera_de_carpa: { icon: Tent, clase: "bg-kido-morado/15 text-kido-morado ring-kido-morado/40", label: "Fuera de carpa" },
-} as const;
-
 export function ChipEstado({
   tipo,
   children,
+  solido = false,
   className,
 }: {
   tipo: TipoEstado;
   children?: React.ReactNode;
+  solido?: boolean;
   className?: string;
 }) {
-  const e = ESTADOS[tipo];
+  const e = ESTADO_VISUAL[tipo];
   const Icon = e.icon;
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset",
-        e.clase,
+        // Texto OSCURO (legible): verde/amarillo/rojo como texto sobre blanco no
+        // cumplen contraste AA. El color del estado vive en la barra, el ícono y
+        // el tinte de fondo, no en el texto.
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full py-1 pl-1.5 pr-3 text-xs font-semibold text-foreground",
+        solido ? "bg-card/95 shadow-sm backdrop-blur-sm" : e.chipBg,
         className,
       )}
     >
-      <Icon className="size-3.5" aria-hidden />
+      <BarraEstado tipo={tipo} className="self-stretch" />
+      <Icon className={cn("size-3.5", e.texto)} aria-hidden />
       {children ?? e.label}
     </span>
   );

@@ -7,9 +7,12 @@ import { LockupMarca } from "@/components/marca/logotipo";
  */
 export function EncabezadoEspacio({
   titulo,
+  saludo,
   accionCerrar,
 }: {
   titulo: string;
+  /** Saludo con el nombre del colaborador; se muestra "Hola, {saludo}". */
+  saludo?: string;
   accionCerrar: () => Promise<void>;
 }) {
   return (
@@ -17,10 +20,18 @@ export function EncabezadoEspacio({
       <div className="flex min-w-0 items-center gap-3">
         <LockupMarca className="shrink-0" />
         <span aria-hidden className="hidden h-6 w-px bg-border sm:block" />
-        {/* El título es redundante con el H1 de la página en móvil: solo desktop. */}
-        <span className="hidden truncate text-sm text-muted-foreground sm:inline">
-          {titulo}
-        </span>
+        {/* En móvil no cabe junto al lockup; el saludo se muestra en el hero de
+            la página. En desktop sí hay espacio. El título hace lo mismo. */}
+        {saludo ? (
+          <span className="hidden min-w-0 truncate text-sm sm:inline">
+            <span className="text-muted-foreground">Hola, </span>
+            <span className="font-semibold text-foreground">{saludo}</span>
+          </span>
+        ) : (
+          <span className="hidden truncate text-sm text-muted-foreground sm:inline">
+            {titulo}
+          </span>
+        )}
       </div>
       <BotonCerrarSesion accion={accionCerrar} />
     </header>

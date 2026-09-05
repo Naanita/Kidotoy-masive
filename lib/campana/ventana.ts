@@ -8,6 +8,7 @@ export interface Ventana {
   fin: string | null;
   eventoFecha: string | null;
   eventoLugar: string | null;
+  eventoHora: string | null;
 }
 
 /**
@@ -20,7 +21,7 @@ export async function obtenerVentana(): Promise<Ventana> {
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from("empresas")
-    .select("ventana_inicio, ventana_fin, evento_fecha, evento_lugar")
+    .select("ventana_inicio, ventana_fin, evento_fecha, evento_lugar, evento_hora")
     .maybeSingle();
 
   const inicio: string | null = data?.ventana_inicio ?? null;
@@ -40,5 +41,6 @@ export async function obtenerVentana(): Promise<Ventana> {
     fin,
     eventoFecha: data?.evento_fecha ?? null,
     eventoLugar: data?.evento_lugar ?? null,
+    eventoHora: data?.evento_hora ?? null,
   };
 }

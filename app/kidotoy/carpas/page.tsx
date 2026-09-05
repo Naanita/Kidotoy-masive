@@ -21,7 +21,7 @@ export default async function PaginaCarpas() {
 
   return (
     <ShellKidotoy>
-      <h1 className="mb-1 text-xl font-semibold">Carpas y referencias</h1>
+      <h1 className="mb-1 font-heading text-xl font-semibold text-foreground">Carpas y referencias</h1>
       <p className="mb-4 text-sm text-muted-foreground">
         Define los puntos de entrega y qué juguete se despacha en cada uno.
       </p>

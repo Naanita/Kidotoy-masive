@@ -1,14 +1,10 @@
-import { Tent } from "lucide-react";
+import { PackageCheck, Inbox, Tent } from "lucide-react";
 import { ShellKidotoy } from "@/components/kidotoy/shell";
-import { TarjetaStat } from "@/components/kidotoy/tarjeta-stat";
+import { RejillaCarpas } from "@/components/kidotoy/rejilla-carpas";
 import { GestionEntregas } from "@/components/kidotoy/gestion-entregas";
 import { Progress } from "@/components/ui/progress";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { EstadoVacio } from "@/components/estado/estado-vacio";
 import {
   Table,
   TableBody,
@@ -17,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatearFechaHora } from "@/lib/format";
+import { formatearFechaHora, tiempoRelativo } from "@/lib/format";
 import { obtenerContexto } from "@/lib/auth/session";
 import {
   obtenerFilasEntregaGestion,
@@ -26,6 +22,30 @@ import {
 } from "@/lib/kidotoy/entregas";
 
 export const dynamic = "force-dynamic";
+
+function Cifra({
+  etiqueta,
+  valor,
+  tono,
+}: {
+  etiqueta: string;
+  valor: number | string;
+  tono?: "exito" | "advertencia";
+}) {
+  return (
+    <div>
+      <p
+        className={
+          "text-xl font-bold tabular-nums text-foreground" +
+          (tono === "exito" ? " text-success" : tono === "advertencia" ? " text-warning" : "")
+        }
+      >
+        {valor}
+      </p>
+      <p className="text-xs text-muted-foreground">{etiqueta}</p>
+    </div>
+  );
+}
 
 export default async function PaginaEntregasKidotoy() {
   const { empresaId, email } = await obtenerContexto();
@@ -46,108 +66,116 @@ export default async function PaginaEntregasKidotoy() {
 
   return (
     <ShellKidotoy>
-      <div className="space-y-8">
-        <section>
-          <h1 className="mb-3 text-xl font-semibold">Jornada de entrega</h1>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <TarjetaStat etiqueta="Entregadas" valor={resumen.entregadas} tono="exito" />
-            <TarjetaStat etiqueta="Pendientes de entrega" valor={resumen.pendientes} tono="advertencia" />
-            <TarjetaStat etiqueta="Avance de entrega" valor={resumen.porcentaje} sufijo="%" />
-            <TarjetaStat
-              etiqueta="Fuera de carpa"
-              valor={resumen.fueraDeCarpa}
-              tono={resumen.fueraDeCarpa > 0 ? "advertencia" : "neutro"}
-            />
-          </div>
-          <Progress value={resumen.porcentaje} className="mt-3" />
-        </section>
+      <h1 className="mb-4 font-heading text-xl font-semibold text-foreground">
+        Entregas
+      </h1>
 
-        <section>
-          <h2 className="mb-3 text-lg font-semibold">Avance por carpa</h2>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {resumen.porCarpa.map((c) => {
-              const pct = c.confirmadas > 0 ? Math.round((100 * c.entregadas) / c.confirmadas) : 0;
-              return (
-                <Card key={c.carpaId ?? "sin"}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2 font-semibold">
-                        <Tent className="size-4" aria-hidden />
-                        {c.carpaNombre}
-                      </span>
-                      <span className="text-sm tabular-nums text-muted-foreground">
-                        {c.entregadas}/{c.confirmadas}
-                      </span>
-                    </div>
-                    <Progress value={pct} className="mt-3" />
-                    <p className="mt-2 text-sm">
-                      <span className="font-semibold tabular-nums text-warning">
-                        {c.pendientes}
-                      </span>{" "}
-                      <span className="text-muted-foreground">
-                        pendientes {c.pendientes > 0 ? "· mandar refuerzo si se congestiona" : ""}
-                      </span>
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </section>
+      <div className="space-y-6">
+        {/* Métricas de la jornada — el avance domina */}
+        <Card>
+          <CardContent className="p-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Jornada de entrega
+            </p>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-bold tabular-nums text-foreground">
+                {resumen.porcentaje}%
+              </span>
+              <span className="pb-1 text-sm text-muted-foreground">
+                entregado
+              </span>
+            </div>
+            <Progress value={resumen.porcentaje} className="mt-2 h-2" />
+            <div className="mt-4 grid grid-cols-3 gap-3 border-t pt-3">
+              <Cifra etiqueta="Entregadas" valor={resumen.entregadas} tono="exito" />
+              <Cifra
+                etiqueta="Por entregar"
+                valor={resumen.pendientes}
+                tono="advertencia"
+              />
+              <Cifra
+                etiqueta="Fuera de carpa"
+                valor={resumen.fueraDeCarpa}
+                tono={resumen.fueraDeCarpa > 0 ? "advertencia" : undefined}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
-        <section>
-          <h2 className="mb-3 text-lg font-semibold">Últimas entregas</h2>
-          <Card>
-            <CardHeader className="py-3">
-              <CardTitle className="text-base">Registro reciente</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {ultimas.length === 0 ? (
-                <p className="p-4 text-sm text-muted-foreground">
-                  Aún no hay entregas registradas.
-                </p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Beneficiario</TableHead>
-                        <TableHead className="w-16">Carpa</TableHead>
-                        <TableHead>Juguete</TableHead>
-                        <TableHead>Operario</TableHead>
-                        <TableHead>Hora</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {ultimas.map((f) => (
-                        <TableRow key={f.seleccionId}>
-                          <TableCell className="font-medium">{f.beneficiario}</TableCell>
-                          <TableCell>
-                            {f.carpaNombre ?? "Sin carpa"}
-                            {f.fueraDeCarpa && (
-                              <span className="ml-1 text-xs text-warning">(fuera)</span>
-                            )}
-                          </TableCell>
-                          <TableCell>{f.producto}</TableCell>
-                          <TableCell className="text-muted-foreground">{f.operario ?? "—"}</TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {formatearFechaHora(f.entregadoEn)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </section>
+        {/* Mapa de la jornada */}
+        <RejillaCarpas resumen={resumen} />
 
+        {/* Últimas entregas */}
         <section>
-          <h2 className="mb-3 text-lg font-semibold">
-            Buscar y gestionar entregas
+          <h2 className="mb-3 font-heading text-base font-semibold text-foreground">
+            Últimas entregas
           </h2>
-          <GestionEntregas filas={filas} carpas={carpas} adminEmail={email ?? "—"} />
+          {ultimas.length === 0 ? (
+            <EstadoVacio
+              icon={Inbox}
+              titulo="Aún no hay entregas"
+              descripcion="Cuando los operarios marquen entregas en la jornada, el registro reciente aparecerá aquí."
+            />
+          ) : (
+            <div className="overflow-x-auto rounded-md border bg-card">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Beneficiario</TableHead>
+                    <TableHead>Juguete</TableHead>
+                    <TableHead>Carpa</TableHead>
+                    <TableHead>Operario</TableHead>
+                    <TableHead className="text-right">Hora</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {ultimas.map((f) => (
+                    <TableRow key={f.seleccionId}>
+                      <TableCell className="font-medium">
+                        {f.beneficiario}
+                      </TableCell>
+                      <TableCell>{f.producto}</TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center gap-1.5">
+                          <Tent
+                            className="size-3.5 text-muted-foreground"
+                            aria-hidden
+                          />
+                          {f.carpaNombre ?? "Sin carpa"}
+                          {f.fueraDeCarpa && (
+                            <span className="rounded-full bg-kido-morado/15 px-1.5 py-0.5 text-xs font-medium text-kido-morado">
+                              fuera de carpa
+                            </span>
+                          )}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {f.operario ?? "—"}
+                      </TableCell>
+                      <TableCell
+                        className="text-right text-muted-foreground"
+                        title={formatearFechaHora(f.entregadoEn)}
+                      >
+                        {tiempoRelativo(f.entregadoEn)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </section>
+
+        {/* Buscar y revertir */}
+        <section>
+          <h2 className="mb-3 font-heading text-base font-semibold text-foreground">
+            Buscar y revertir una entrega
+          </h2>
+          <GestionEntregas
+            filas={filas}
+            carpas={carpas}
+            adminEmail={email ?? "—"}
+          />
         </section>
       </div>
     </ShellKidotoy>

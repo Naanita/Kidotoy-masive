@@ -34,6 +34,59 @@ async function rpc(fn, body) {
   return { status: r.status, body: j };
 }
 
+/** Fecha (YYYY-MM-DD) de hace n días, en hora local. */
+function fechaHaceDias(n) {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  const p = (x) => String(x).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+/**
+ * Reescribe confirmada_en de TODAS las selecciones confirmadas para que queden
+ * repartidas en ~13 días con forma de campaña real. Pesos del más viejo (apertura)
+ * al más nuevo (hoy): arranque bajo, pico al día siguiente del comunicado de RH,
+ * y cola de goteo. Se agrupan por día y se hace un PATCH por día (14:00 -05:00,
+ * hora que no cruza de día en UTC, así el corte por fecha de la gráfica es exacto).
+ */
+async function repartirFechas() {
+  const pesos = [2, 3, 5, 9, 14, 12, 9, 7, 5, 4, 3, 3, 2]; // viejo → hoy (13 días)
+  const N = pesos.length;
+  const suma = pesos.reduce((a, b) => a + b, 0);
+
+  const sels = await rest("selecciones?select=id&order=codigo_entrega");
+  const ids = sels.map((s) => s.id);
+  const total = ids.length;
+  if (total === 0) return;
+
+  // Reparto por mayor resto para que los conteos sumen exactamente el total.
+  const crudo = pesos.map((p) => (p / suma) * total);
+  const base = crudo.map((x) => Math.floor(x));
+  let resto = total - base.reduce((a, b) => a + b, 0);
+  const orden = crudo
+    .map((x, i) => ({ i, frac: x - Math.floor(x) }))
+    .sort((a, b) => b.frac - a.frac);
+  for (let k = 0; k < resto; k++) base[orden[k].i]++;
+
+  // Corta los ids en cubos (viejo → nuevo) y hace un PATCH por día.
+  let cursor = 0;
+  for (let k = 0; k < N; k++) {
+    const cuenta = base[k];
+    if (cuenta === 0) continue;
+    const bucket = ids.slice(cursor, cursor + cuenta);
+    cursor += cuenta;
+    const offset = N - 1 - k; // k=0 (más viejo) → offset mayor
+    const ts = `${fechaHaceDias(offset)}T14:00:00-05:00`;
+    const lista = bucket.join(",");
+    await fetch(`${URL}/rest/v1/selecciones?id=in.(${lista})`, {
+      method: "PATCH",
+      headers: { ...h, Prefer: "return=minimal" },
+      body: JSON.stringify({ confirmada_en: ts }),
+    });
+  }
+  console.log(`  Fechas de confirmación repartidas en ${N} días (${total} selecciones).`);
+}
+
 (async () => {
   const beneficiarios = await rest(
     "beneficiarios?select=id,edad,genero,colaboradores(cedula)&order=id",
@@ -77,6 +130,14 @@ async function rpc(fn, body) {
       if (errores <= 3) console.error("  error:", r.status, JSON.stringify(r.body).slice(0, 100));
     }
   }
+
+  // --- Reparte las fechas de confirmación en ~13 días hacia atrás, con una
+  //     curva realista: pocas al abrir la campaña, un pico al día siguiente del
+  //     "comunicado de RH", y luego goteo hasta hoy. confirmar_seleccion() sella
+  //     confirmada_en con now(), así que sin esto TODAS caen el mismo día y la
+  //     gráfica de evolución se ve como un solo punto (roto, aunque correcto).
+  //     Solo se reescriben fechas; nada más se toca del componente ni del RPC.
+  await repartirFechas();
 
   // --- Jornada de entrega en curso: marca ~40% de lo confirmado como
   //     entregado, repartido entre operarios, para que la sección "Entregas"

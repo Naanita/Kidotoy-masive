@@ -7,36 +7,55 @@ de Bogotá**, entidad pública, operado por **Kidotoy**, una juguetería infanti
 
 La relación entre ambas marcas es una **jerarquía, no una mezcla**:
 
-- **El marco es Acueducto.** Estructura, navegación, fondos, encabezados, formularios,
-  tablas y botones principales. Azul institucional, blanco dominante, limpio, confiable.
-  El colaborador tiene que sentir que está en un sistema oficial de su empleador.
-- **El contenido es Kidotoy.** Las tarjetas de juguete, los chips de estado, las
-  celebraciones, las ilustraciones y los acentos de color. Ahí entra la alegría.
+- **El marco es Acueducto.** La estructura de confianza: acción principal (botones) en azul
+  institucional, formularios y tablas legibles, y el portal `/empresa` sobrio. El
+  colaborador tiene que sentir que está en un sistema oficial de su empleador.
+- **El contenido y la atmósfera son Kidotoy.** Es una plataforma de **juguetes**: el color
+  de Kidotoy es su factor dinámico y divertido, no un invitado tímido. Se usa con
+  generosidad en los **paneles de marca** (el lado del keyvisual en el login, héroes,
+  encabezados de espacio), las **tarjetas y chips**, los **estados vacíos**, las
+  **celebraciones** y los **acentos**. Turquesa al frente.
 
-Regla práctica: **el azul manda la pantalla, los colores de Kidotoy viven dentro de las
-tarjetas y los momentos de celebración.** Nunca un fondo completo en colores Kidotoy salvo
-en las pantallas de éxito.
+Regla práctica (dirección "marco Acueducto, más Kidotoy adentro"): **el azul se reserva
+para la acción y la estructura crítica; el turquesa y los demás colores Kidotoy dan la
+atmósfera.** Sí se permiten fondos completos en colores Kidotoy en paneles de marca,
+bienvenidas, celebraciones y remates; lo que se cuida es que **datos, formularios y tablas
+queden siempre legibles** y que el portal del Acueducto no pierda su sobriedad.
 
-Tono: cálido pero serio. Es un regalo para los hijos de los empleados, no una tienda.
-Confiable primero, alegre después.
+Los cuatro **devices del keyvisual** (franja de 4 colores, nube, corona, destellos) son
+elementos de marca reusables (`components/marca/`), como el logo. Donde vaya una imagen que
+todavía no existe, se deja un **preview de marca** (`PreviewImagen`), no un recuadro gris.
+
+Tono: cálido y alegre, pero confiable. Es un regalo para los hijos de los empleados: se
+siente que es de juguetes, sin dejar de sentirse oficial.
 
 ---
 
 ## 1. Tema visual y atmósfera
 
-Diseño limpio, luminoso y espacioso, con formas redondeadas y mucho aire. Fondo blanco
-como lienzo principal, superficies gris muy claro para agrupar, y azul institucional como
-único acento estructural.
+Diseño limpio y espacioso con formas redondeadas, pero **no plano ni descolorido**: es
+una plataforma de juguetes. El área de trabajo es blanca y legible; el color de Kidotoy
+entra con fuerza en la chrome (encabezados, acentos, remates) para darle vida.
 
 **Características:**
-- Fondo blanco `#FFFFFF` dominante; nunca fondos oscuros salvo la barra lateral del panel
-  administrativo y las pantallas de confirmación a página completa
-- Acento único estructural: `#007BFF`
+- Fondo blanco `#FFFFFF` dominante en el área de datos; nunca fondos oscuros salvo la barra
+  lateral del panel administrativo y las pantallas de confirmación a página completa
+- **Acción** principal en azul `#007BFF`; **atmósfera** en color Kidotoy (turquesa al frente)
 - Esquinas redondeadas generosas en todo: 12px en tarjetas, 8px en botones, píldora en chips
 - Sombras suaves y difusas con tinte azulado, nunca negras ni duras
-- Ilustración 3D redondeada y amable para momentos emocionales
-- Espacio en blanco abundante. Cuando dudes, más aire
-- Etiquetas: luminoso, redondeado, institucional-cálido, sin serifas
+- Espacio en blanco abundante en las zonas de datos. Cuando dudes, más aire
+- Etiquetas: luminoso, redondeado, alegre-institucional, sin serifas
+
+**Recetas contra la planitud (usar color Kidotoy sin ensuciar los datos):**
+- **Hero de sección/página:** banda con degradado `--kido-turquesa → --kido-marino`, texto
+  blanco en Fredoka, estrellas (`Destellos`) y `FranjaMarca` al pie. Para encabezados de
+  espacio, bienvenidas y el tope de pantallas clave.
+- **Acento de título por sección:** una barra corta redondeada en un color Kidotoy que
+  rota (turquesa/rojo/amarillo/morado) antes del título en Fredoka. Da ritmo y color sin
+  tocar los datos. (Es decorativo de marca, distinto del gesto de estado.)
+- **Remate:** `FranjaMarca` al pie de páginas y tarjetas de marca.
+- **Estados vacíos** en turquesa (`bg-kido-turquesa/15` + ícono turquesa), no en gris.
+- **`PreviewImagen`** (degradado Kidotoy) donde falte una foto.
 
 ---
 
@@ -59,11 +78,43 @@ como lienzo principal, superficies gris muy claro para agrupar, y azul instituci
 Colores oficiales del manual de marca de Kidotoy. Se usan **dentro** de tarjetas, chips,
 ilustraciones y celebraciones. Nunca como fondo de pantalla completa salvo en éxito.
 
-- **Turquesa** `#16ABB6` · `--kido-turquesa`
-- **Rojo** `#E23C3D` · `--kido-rojo` (Pantone Warm Red C)
-- **Amarillo** `#F4A612` · `--kido-amarillo`
-- **Morado** `#8373AC` · `--kido-morado`
-- **Azul marino** `#101460` · `--kido-marino`
+- **Turquesa** `#10B7CD` · `--kido-turquesa` (Pantone 3115 C)
+- **Rojo** `#E84141` · `--kido-rojo` (Pantone Warm Red C)
+- **Amarillo** `#F8AB11` · `--kido-amarillo` (Pantone 2010 C)
+- **Morado** `#8974B3` · `--kido-morado` (Pantone 2101 C)
+- **Azul marino** `#101460` · `--kido-marino` (secundario)
+
+### Capa "propuesta del cliente" — el espacio del colaborador
+
+Tokens FIJOS (no pasan por `/dev/tema`: son identidad, como el logo), **muestreados píxel a
+píxel del PDF de la propuesta aprobada** con `sharp`. Rigen el login (`/`) y "Mis
+beneficiarios" (`/inicio`).
+
+- **Azul del panel** `#135EC3` · `--acueducto-azul` — panel izquierdo del login
+- **Azul vivo** `#0167D5` · `--acueducto-azul-vivo` — titulares y tarjeta de credenciales
+- **Lienzo** `#F5FBFB` · `--acueducto-lienzo` — fondo de las dos pantallas. Es un blanco
+  AZULADO, no gris: con gris la composición se apaga entera
+- **Borde de campo** `#80C8FF` · `--acueducto-campo` — los campos sobre azul no son cajas
+  blancas, son transparentes con borde claro
+- **Píldora** `#D4E7F5` · `--acueducto-pildora` — "Regalos en alianza con Kidotoy"
+- **Gris decorativo** `#E6ECEC` · `--gris-decorativo` — forma geométrica del fondo
+- **Tintes de silueta** `--kido-turquesa-claro` `#B3E0E5`, `--kido-morado-claro` `#B4B0C1`,
+  `--kido-rojo-claro`, `--kido-marino-claro` — la silueta del beneficiario no es blanco
+  traslúcido: es un tono más claro y menos saturado del propio color de la tarjeta
+
+> **No inventar "variantes profundas" de los colores de marca para ganar contraste.** Se
+> intentó y el turquesa quedó mostaza y el morado café: se destruye la fidelidad, que es el
+> objetivo. El nombre del beneficiario va en texto grande y bold (umbral AA 3:1, no 4.5:1) y
+> los colores del manual pasan ahí. La línea pequeña de edad/género se resuelve con peso de
+> texto y una sombra mínima. Lo que sí no se puede es usar el ROJO o el AMARILLO de Kidotoy
+> como fondo de tarjeta: el rojo se traga la píldora roja de "Falta elegir" y sobre el
+> amarillo el nombre en blanco queda en 2.0:1. Por eso el tercer color de tarjeta es el azul
+> marino del manual.
+
+> Hexes exactos del *Manual de Identidad Corporativa Kidotoy* (autoridad de marca).
+> El manual además define cuatro **devices** de keyvisual que la plataforma usa como
+> componentes: la **franja de 4 colores** (turquesa·rojo·amarillo·morado, firma al pie),
+> la **nube**, la **corona** (símbolo del logo, en celebración) y los **destellos**.
 
 ### Semánticos
 
@@ -71,8 +122,8 @@ Los colores de Kidotoy hacen doble función como semánticos, lo que mantiene la
 y nativa a la marca:
 
 - **Éxito / Confirmado / Disponible** `#22C55E`
-- **Advertencia / Últimas unidades** `#F4A612` (amarillo Kidotoy)
-- **Error / Agotado / Destructivo** `#E23C3D` (rojo Kidotoy)
+- **Advertencia / Últimas unidades** `#F8AB11` (amarillo Kidotoy)
+- **Error / Agotado / Destructivo** `#E84141` (rojo Kidotoy)
 - **Informativo** `#007BFF`
 
 Todo estado se comunica con **color más icono más texto**, nunca solo con color. Los
@@ -123,7 +174,7 @@ peso. Es un dato que la gente dicta por teléfono y transcribe a mano.
   escritorio, peso 500. Hover a `#1361C5`.
 - **Secundario:** fondo blanco, borde 1px `#007BFF`, texto `#007BFF`, mismo radio y altura.
 - **Terciario / texto:** sin fondo ni borde, texto `#007BFF`, con flecha o icono opcional.
-- **Destructivo:** fondo `#E23C3D`, texto blanco. Solo para acciones irreversibles.
+- **Destructivo:** fondo `#E84141`, texto blanco. Solo para acciones irreversibles.
 - **Deshabilitado:** fondo `#EDEDED`, texto `#999999`, cursor no permitido.
 - **Cargando:** indicador giratorio dentro del botón, texto en pasado o gerundio, botón
   bloqueado para evitar doble envío.
@@ -285,9 +336,12 @@ ocupa la pantalla completa en rojo.
 ## 8. Qué hacer y qué no
 
 ### Sí
-- Usar blanco como fondo dominante y `#007BFF` como único acento estructural
-- Reservar los colores de Kidotoy para tarjetas, chips, ilustraciones y celebraciones
-- Usar Fredoka solo en momentos de alegría, Montserrat en títulos, Inter en todo lo demás
+- Usar blanco como fondo dominante de trabajo y `#007BFF` para la acción principal
+- Usar los colores de Kidotoy (turquesa al frente) con generosidad como atmósfera: paneles
+  de marca, encabezados, estados vacíos, tarjetas, chips y celebraciones
+- Dejar un `PreviewImagen` de marca donde vaya una imagen que aún no existe
+- Usar Fredoka en momentos de alegría y títulos con carácter (login, éxito, catálogo);
+  Montserrat en títulos institucionales, Inter en cuerpo
 - Redondear todo con generosidad
 - Sombras con tinte azul, suaves y difusas
 - Comunicar cada estado con color, icono y texto a la vez
@@ -297,7 +351,9 @@ ocupa la pantalla completa en rojo.
 
 ### No
 - No usar fondos oscuros, salvo la barra lateral del panel y las pantallas de confirmación
-- No pintar pantallas completas con colores de Kidotoy salvo en éxito
+- No poner fondos de color Kidotoy DEBAJO de datos densos, formularios o tablas: ahí manda
+  la legibilidad (los paneles de marca de color son para bienvenida/celebración/acentos)
+- No volver turquesa el portal `/empresa`: es la ventana del cliente institucional
 - No usar Fredoka para texto corrido
 - No usar negro puro en texto
 - No usar esquinas rectas: se sienten hostiles en este lenguaje
@@ -336,15 +392,15 @@ Primario oscuro  #1361C5
 Azul profundo    #0B3A78
 Azul claro       #E7F5FF
 
-Kidotoy turquesa #16ABB6
-Kidotoy rojo     #E23C3D
-Kidotoy amarillo #F4A612
-Kidotoy morado   #8373AC
+Kidotoy turquesa #10B7CD
+Kidotoy rojo     #E84141
+Kidotoy amarillo #F8AB11
+Kidotoy morado   #8974B3
 Kidotoy marino   #101460
 
 Éxito            #22C55E
-Advertencia      #F4A612
-Error            #E23C3D
+Advertencia      #F8AB11
+Error            #E84141
 
 Display  Fredoka
 Títulos  Montserrat

@@ -72,9 +72,70 @@ function Logo({
   );
 }
 
-/** Solo el logo de Kidotoy (para el panel de administración). */
-export function MarcaKidotoy({ className }: { className?: string }) {
-  return <Logo marca="kidotoy" alturaClase="h-7" className={className} />;
+/** Solo el logo de Kidotoy (para el panel de administración y el panel de marca). */
+export function MarcaKidotoy({
+  className,
+  alturaClase = "h-7",
+}: {
+  className?: string;
+  alturaClase?: string;
+}) {
+  return <Logo marca="kidotoy" alturaClase={alturaClase} className={className} />;
+}
+
+/**
+ * Solo el logo del Acueducto a color (PNG oficial, lockup horizontal completo
+ * con la bajada). Para la versión BLANCA usar `MarcaAcueductoBlanco`.
+ */
+export function MarcaAcueducto({
+  className,
+  alturaClase = "h-7",
+}: {
+  className?: string;
+  alturaClase?: string;
+}) {
+  return <Logo marca="acueducto" alturaClase={alturaClase} className={className} />;
+}
+
+/**
+ * Logo del Acueducto en BLANCO para el panel azul del login, en el lockup
+ * apilado (rana sobre la palabra) que usa la propuesta del cliente.
+ *
+ * Es un SVG, no el PNG teñido con `filter: brightness(0) invert(1)`: el PNG es
+ * de 500×124 y a este tamaño el filtro lo dejaba lavado y con la bajada hecha
+ * puré. El SVG lo genera `scripts/trazar-logo.mjs` desde el PNG oficial (traza
+ * solo los trazos cian, que son la rana y la palabra) y se pinta por
+ * `mask-image` + color de fondo, así que se tiñe con cualquier token —hoy
+ * blanco— sin filtros. Al llegar el vectorial oficial, se reemplaza el archivo.
+ */
+const ACUEDUCTO_APILADO = "/logos/acueducto-marca-apilada.svg";
+const PROPORCION_APILADO = 342 / 280.6; // viewBox del SVG generado
+
+export function MarcaAcueductoBlanco({
+  className,
+  alturaClase = "h-16",
+}: {
+  className?: string;
+  alturaClase?: string;
+}) {
+  return (
+    <span
+      role="img"
+      aria-label={LOGOS.acueducto.alt}
+      style={{
+        aspectRatio: String(PROPORCION_APILADO),
+        maskImage: `url(${ACUEDUCTO_APILADO})`,
+        WebkitMaskImage: `url(${ACUEDUCTO_APILADO})`,
+        maskSize: "contain",
+        WebkitMaskSize: "contain",
+        maskRepeat: "no-repeat",
+        WebkitMaskRepeat: "no-repeat",
+        maskPosition: "center",
+        WebkitMaskPosition: "center",
+      }}
+      className={cn("block bg-white", alturaClase, className)}
+    />
+  );
 }
 
 /**

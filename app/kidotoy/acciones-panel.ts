@@ -89,8 +89,8 @@ export async function liberarSeleccion(
     };
   }
 
-  revalidatePath("/kidotoy/liberar");
   revalidatePath("/kidotoy/selecciones");
+  revalidatePath("/kidotoy/inventario");
   revalidatePath("/kidotoy/panel");
   return { ok: true };
 }

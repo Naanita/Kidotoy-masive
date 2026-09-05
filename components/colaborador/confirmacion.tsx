@@ -5,6 +5,8 @@ import Link from "next/link";
 import { TriangleAlert, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AvatarInicial } from "@/components/estado/avatar-inicial";
+import { ImagenProducto } from "@/components/colaborador/imagen-producto";
 import { formatearFecha } from "@/lib/format";
 import type { Ventana } from "@/lib/campana/ventana";
 import type { Beneficiario, Producto } from "@/lib/colaborador/datos";
@@ -15,8 +17,6 @@ type Accion = (
   formData: FormData,
 ) => Promise<EstadoConfirmacion>;
 
-const PLACEHOLDER = "https://placehold.co/600x600/EEE/31343C?text=Juguete";
-
 const MENSAJES: Record<string, string> = {
   SIN_STOCK:
     "Este juguete se agotó mientras lo elegías. Por favor selecciona otro.",
@@ -25,6 +25,13 @@ const MENSAJES: Record<string, string> = {
   ERROR: "No pudimos confirmar la selección. Inténtalo de nuevo.",
 };
 
+/**
+ * Confirmación: un solo objetivo, mucho aire. La imagen del juguete es la
+ * protagonista; el nombre en Fredoka y para quién es. La advertencia va en ÁMBAR
+ * (atención, no error rojo): la decisión es irreversible y hay que decirlo con
+ * calma. SIN_STOCK muestra el mensaje exacto y cambia la acción a volver al
+ * catálogo (que al recargar ya sale actualizado).
+ */
 export function Confirmacion({
   accion,
   beneficiario,
@@ -50,40 +57,46 @@ export function Confirmacion({
           : null;
 
   return (
-    <div className="space-y-5">
-      <div className="flex gap-4">
-        <img
-          src={producto.imagen_url ?? PLACEHOLDER}
+    <div className="space-y-6">
+      <div className="mx-auto w-full max-w-[15rem]">
+        <ImagenProducto
+          src={producto.imagen_url}
           alt={producto.nombre}
-          className="size-24 shrink-0 rounded-md bg-muted object-cover"
+          className="aspect-square w-full rounded-xl shadow-md"
         />
-        <div>
-          <p className="text-sm text-muted-foreground">
-            Para {beneficiario.nombre}
-          </p>
-          <h2 className="font-display text-xl font-semibold text-foreground">
-            {producto.nombre}
-          </h2>
-          {producto.descripcion && (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {producto.descripcion}
-            </p>
-          )}
-        </div>
       </div>
 
-      <Alert variant="warning">
-        <TriangleAlert className="size-4" aria-hidden />
-        <AlertTitle>Esta elección no se puede cambiar</AlertTitle>
-        <AlertDescription>
-          Al confirmar, {beneficiario.nombre} quedará con este regalo y no
-          podrás elegir otro. Solo un administrador de Kidotoy puede liberarlo.
-        </AlertDescription>
-      </Alert>
+      <div className="text-center">
+        <p className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <AvatarInicial nombre={beneficiario.nombre} className="size-6 text-[10px]" />
+          Para {beneficiario.nombre}
+        </p>
+        <h2 className="mt-1 font-display text-2xl font-bold text-foreground">
+          {producto.nombre}
+        </h2>
+        {producto.descripcion && (
+          <p className="mx-auto mt-1 max-w-xs text-sm text-muted-foreground">
+            {producto.descripcion}
+          </p>
+        )}
+      </div>
+
+      {/* La advertencia de irreversibilidad no aplica si ya hubo un error (p. ej.
+          SIN_STOCK): ahí manda el mensaje rojo accionable, sin ruido. */}
+      {!code && (
+        <Alert variant="warning">
+          <TriangleAlert aria-hidden />
+          <AlertTitle>Esta elección no se puede cambiar</AlertTitle>
+          <AlertDescription>
+            Al confirmar, {beneficiario.nombre} quedará con este regalo y no
+            podrás elegir otro. Solo un administrador de Kidotoy puede liberarlo.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {!abierta && mensajeVentana && (
         <Alert>
-          <Clock className="size-4" aria-hidden />
+          <Clock aria-hidden />
           <AlertTitle>Aún no puedes confirmar</AlertTitle>
           <AlertDescription>{mensajeVentana}</AlertDescription>
         </Alert>
@@ -91,21 +104,20 @@ export function Confirmacion({
 
       {code && (
         <Alert variant="destructive">
-          <AlertDescription>
-            {MENSAJES[code] ?? MENSAJES.ERROR}
-          </AlertDescription>
+          <TriangleAlert aria-hidden />
+          <AlertDescription>{MENSAJES[code] ?? MENSAJES.ERROR}</AlertDescription>
         </Alert>
       )}
 
       {code === "SIN_STOCK" ? (
         <Button asChild className="h-12 w-full text-base">
-          <Link href={`/acceso/beneficiario/${beneficiario.id}`}>
+          <Link href={`/beneficiario/${beneficiario.id}`}>
             Volver al catálogo
           </Link>
         </Button>
       ) : code === "YA_TIENE_SELECCION" ? (
         <Button asChild className="h-12 w-full text-base">
-          <Link href="/acceso/inicio">Ir a mis beneficiarios</Link>
+          <Link href="/inicio">Ir a mis beneficiarios</Link>
         </Button>
       ) : (
         <div className="space-y-3">
@@ -123,12 +135,8 @@ export function Confirmacion({
               Confirmar regalo
             </Button>
           </form>
-          <Button
-            asChild
-            variant="outline"
-            className="h-12 w-full text-base"
-          >
-            <Link href={`/acceso/beneficiario/${beneficiario.id}`}>Volver</Link>
+          <Button asChild variant="outline" className="h-12 w-full text-base">
+            <Link href={`/beneficiario/${beneficiario.id}`}>Cancelar</Link>
           </Button>
         </div>
       )}

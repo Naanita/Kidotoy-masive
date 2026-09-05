@@ -15,11 +15,13 @@ export function Catalogo({
   edad,
   genero,
   beneficiarioId,
+  seleccionAbierta = true,
 }: {
   productosIniciales: Producto[];
   edad: number;
   genero: string;
   beneficiarioId: string;
+  seleccionAbierta?: boolean;
 }) {
   const [productos, setProductos] = useState<Producto[]>(productosIniciales);
 
@@ -64,12 +66,13 @@ export function Catalogo({
   }, [edad, genero]);
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
+    <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3">
       {productos.map((p) => (
         <TarjetaProducto
           key={p.id}
           producto={p}
           beneficiarioId={beneficiarioId}
+          seleccionAbierta={seleccionAbierta}
         />
       ))}
     </div>

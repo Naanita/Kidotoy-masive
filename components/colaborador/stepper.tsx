@@ -25,7 +25,7 @@ export function Stepper({ actual }: { actual: 1 | 2 | 3 | 4 }) {
                 <span
                   aria-hidden
                   className={cn(
-                    "h-0.5 flex-1 rounded",
+                    "h-1.5 flex-1 rounded-full",
                     i === 0 ? "invisible" : lineaIzqActiva ? "bg-primary" : "bg-border",
                   )}
                 />
@@ -42,7 +42,7 @@ export function Stepper({ actual }: { actual: 1 | 2 | 3 | 4 }) {
                 <span
                   aria-hidden
                   className={cn(
-                    "h-0.5 flex-1 rounded",
+                    "h-1.5 flex-1 rounded-full",
                     i === PASOS.length - 1 ? "invisible" : lineaDerActiva ? "bg-primary" : "bg-border",
                   )}
                 />

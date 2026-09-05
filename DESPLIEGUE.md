@@ -81,5 +81,7 @@ curso, una referencia agotada), con el estrella pendiente para el recorrido.
 Ver la sección "Pendientes de producción" en `PROGRESO.md`. Lo crítico:
 - Plan **Pro de Supabase** (concurrencia de Realtime con ~500 personas el mismo día).
 - **Dominio verificado en Resend** y volumen (el plan gratuito son ~100 correos/día).
-- **Generador de usuarios de operario** (uno por persona, para que la auditoría sirva).
+- **Crear la cuenta real de cada operario** (una por persona, para que la auditoría de
+  quién entregó qué sirva). Ya se hace desde el panel (`/kidotoy/operarios`), con su carpa;
+  es un paso de puesta en marcha, no algo por construir.
 - Datos reales de colaboradores/menores solo con contrato y política de tratamiento.

@@ -1,0 +1,12 @@
+Foto de bienvenida del login (familia.jpg)
+------------------------------------------
+Fuente : Pexels — https://www.pexels.com/photo/13938330/
+         https://images.pexels.com/photos/13938330/pexels-photo-13938330.jpeg
+Licencia: Pexels License (uso libre, comercial incluido; la atribución no es
+          obligatoria pero se deja registrada aquí).
+
+Recorte: del original 2400x1600 se tomó left=428 top=0 1680x1600 (proporción
+1.05, la de la propuesta del cliente) y se redujo a 1400 px de ancho.
+
+Es una foto de STOCK, no de personas del Acueducto. Si el cliente entrega su
+propia imagen, se reemplaza este archivo y no hay que tocar código.

@@ -18,16 +18,31 @@ La plataforma tiene cuatro espacios, cada uno con su propio ingreso:
 - **Para la administración de Kidotoy.** Un tablero con el avance de la campaña en tiempo
   real: cuánto falta, qué referencias se están agotando y quiénes aún no han entrado. Puede
   revisar y exportar las selecciones a Excel, ajustar el inventario, gestionar el catálogo,
-  liberar una selección puntual (queda registrado quién y por qué), y llevar el control de
-  la jornada de entrega por carpa. Cada día recibe un correo con el resumen.
+  liberar una selección puntual (queda registrado quién y por qué), **configurar las carpas
+  de entrega** (cómo se agrupan los juguetes en puntos físicos el día del evento, para juntar
+  dos edades en un punto o partir una edad numerosa en dos) y llevar el control de la jornada
+  por carpa. Cada día recibe un correo con el resumen.
 
 - **Para Recursos Humanos del Acueducto.** Solo consulta: ve el avance, quiénes están
   pendientes y puede exportar reportes. No puede modificar nada.
 
 - **Para el operario de entrega (celular, al aire libre).** Pantalla simple y de botones
   grandes: busca por código, por cédula o escaneando el QR, ve a qué carpa va el niño y
-  qué juguete le corresponde, y confirma la entrega con un solo toque. Si un regalo ya fue
-  entregado, lo avisa de forma imposible de pasar por alto, con la hora y el operario.
+  qué juguete le corresponde, y confirma la entrega con un solo toque. Cada operario tiene
+  su carpa asignada y la ve siempre en pantalla; si un juguete corresponde a otra carpa, el
+  sistema lo avisa para redirigir a la familia, pero **no lo bloquea** si igual hay que
+  entregarlo. Si un regalo ya fue entregado, lo avisa en una pantalla roja de lado a lado,
+  con la hora y el operario anterior.
+
+## Cómo se ve
+
+Cada espacio tiene su propia identidad, no una plantilla genérica igual para todos: la
+marca del **Acueducto** manda donde entra el Acueducto, y la de **Kidotoy** en la
+administración, siempre juntas pero en su justa medida. El colaborador ve una experiencia
+cálida y guiada, pensada para el celular; el operario, una pantalla de botones enormes y
+alto contraste para usar de pie y al aire libre; y Recursos Humanos, un portal sobrio de
+solo consulta. Todos los colores, tipografías y el logo se pueden ajustar sin tocar
+programación, para dejarlo fino cuando se defina la imagen definitiva.
 
 ## Lo que hace la plataforma robusta
 
@@ -56,8 +71,10 @@ menores. Es un ambiente de demostración, no el sistema definitivo.
 
 - Subir el plan de la base de datos y el del correo, para aguantar a los ~500 colaboradores
   entrando el mismo día y el volumen de correos de ese día.
-- Un usuario propio para cada operario de entrega (el día del evento son varios a la vez),
-  para que el registro de quién entregó qué sea confiable.
+- Crear una cuenta de operario para cada persona de la jornada (el día del evento son
+  varios a la vez), para que el registro de quién entregó qué sea confiable. La plataforma
+  ya permite crearlas y asignarles su carpa desde el tablero de administración; es un paso
+  de puesta en marcha, no algo por construir.
 - Cargar los datos reales de los colaboradores y sus hijos, con el contrato y la política de
   manejo de datos firmados (hoy, por decisión, no se mueve información real de menores).
 - Verificar el correo con el dominio propio de Kidotoy.

@@ -1,16 +1,9 @@
 import { ShellKidotoy } from "@/components/kidotoy/shell";
+import { RejillaCobertura } from "@/components/kidotoy/rejilla-cobertura";
 import { TablaInventario } from "@/components/kidotoy/tabla-inventario";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { obtenerContexto } from "@/lib/auth/session";
 import {
-  obtenerInventarioGrupos,
+  obtenerCoberturaGrupos,
   obtenerProductosAdmin,
 } from "@/lib/kidotoy/datos";
 
@@ -24,53 +17,30 @@ export default async function PaginaInventario() {
     );
   }
 
-  const [grupos, productos] = await Promise.all([
-    obtenerInventarioGrupos(empresaId),
+  const [cobertura, productos] = await Promise.all([
+    obtenerCoberturaGrupos(empresaId),
     obtenerProductosAdmin(empresaId),
   ]);
 
   return (
     <ShellKidotoy>
-      <div className="space-y-8">
-        <section>
-          <h1 className="mb-1 text-xl font-semibold">Inventario por grupo</h1>
-          <p className="mb-4 text-sm text-muted-foreground">
-            Resumen por edad y género.
-          </p>
-          <div className="overflow-x-auto rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-16">Edad</TableHead>
-                  <TableHead className="w-20">Género</TableHead>
-                  <TableHead className="text-right">Referencias</TableHead>
-                  <TableHead className="text-right">Iniciales</TableHead>
-                  <TableHead className="text-right">Disponibles</TableHead>
-                  <TableHead className="text-right">Consumidas</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {grupos.map((g) => (
-                  <TableRow key={`${g.edad}-${g.genero}`}>
-                    <TableCell>{g.edad}</TableCell>
-                    <TableCell>{g.genero}</TableCell>
-                    <TableCell className="text-right tabular-nums">{g.referencias}</TableCell>
-                    <TableCell className="text-right tabular-nums">{g.iniciales}</TableCell>
-                    <TableCell className="text-right tabular-nums">{g.disponibles}</TableCell>
-                    <TableCell className="text-right tabular-nums">{g.consumidas}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </section>
+      <h1 className="mb-4 font-heading text-xl font-semibold text-foreground">
+        Inventario
+      </h1>
+
+      <div className="space-y-6">
+        <RejillaCobertura cobertura={cobertura} />
 
         <section>
-          <h2 className="mb-1 text-lg font-semibold">Referencias</h2>
-          <p className="mb-4 text-sm text-muted-foreground">
-            Edita el total de unidades de cada referencia. El mínimo es lo ya
-            consumido.
-          </p>
+          <div className="mb-3">
+            <h2 className="font-heading text-base font-semibold text-foreground">
+              Referencias
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Edita el total de unidades de cada referencia. El mínimo es lo ya
+              consumido.
+            </p>
+          </div>
           <TablaInventario productos={productos} />
         </section>
       </div>

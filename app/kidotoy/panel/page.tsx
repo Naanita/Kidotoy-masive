@@ -1,21 +1,53 @@
 import Link from "next/link";
-import { AlertTriangle, PackageX, Users2, ArrowRight } from "lucide-react";
+import { ArrowRight, Users2, TriangleAlert, Ban } from "lucide-react";
 import { ShellKidotoy } from "@/components/kidotoy/shell";
-import { TarjetaStat } from "@/components/kidotoy/tarjeta-stat";
+import { GraficaEvolucion } from "@/components/kidotoy/grafica-evolucion";
 import { Progress } from "@/components/ui/progress";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 import { obtenerContexto } from "@/lib/auth/session";
 import {
   obtenerResumen,
   obtenerColaboradoresPendientes,
+  obtenerCoberturaGrupos,
+  obtenerEvolucion,
 } from "@/lib/kidotoy/datos";
+import { obtenerReferenciasConCarpa } from "@/lib/kidotoy/carpas";
+
+function Kicker({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      {children}
+    </h2>
+  );
+}
+
+function Cifra({
+  etiqueta,
+  valor,
+  tono,
+}: {
+  etiqueta: string;
+  valor: number | string;
+  tono?: "peligro" | "advertencia";
+}) {
+  return (
+    <div>
+      <p
+        className={cn(
+          "text-xl font-bold tabular-nums text-foreground",
+          tono === "peligro" && "text-destructive",
+          tono === "advertencia" && "text-warning",
+        )}
+      >
+        {valor}
+      </p>
+      <p className="text-xs text-muted-foreground">{etiqueta}</p>
+    </div>
+  );
+}
 
 export default async function PaginaResumenKidotoy() {
   const { empresaId } = await obtenerContexto();
@@ -27,104 +59,192 @@ export default async function PaginaResumenKidotoy() {
     );
   }
 
-  const [resumen, pendientes] = await Promise.all([
-    obtenerResumen(empresaId),
-    obtenerColaboradoresPendientes(empresaId),
-  ]);
+  const [resumen, pendientes, cobertura, evolucion, referencias] =
+    await Promise.all([
+      obtenerResumen(empresaId),
+      obtenerColaboradoresPendientes(empresaId),
+      obtenerCoberturaGrupos(empresaId),
+      obtenerEvolucion(empresaId),
+      obtenerReferenciasConCarpa(empresaId),
+    ]);
+
+  const sinCarpa = referencias.filter((r) => r.activo && !r.carpaId);
 
   return (
     <ShellKidotoy>
-      <div className="space-y-6">
-        {/* Pregunta 1: ¿cuánto falta? */}
-        <section>
-          <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-            ¿Cuánto falta?
-          </h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <TarjetaStat etiqueta="Avance" valor={resumen.porcentaje} sufijo="%" tono="exito" />
-            <TarjetaStat etiqueta="Confirmados" valor={resumen.confirmados} />
-            <TarjetaStat etiqueta="Pendientes" valor={resumen.pendientes} tono="advertencia" />
-            <TarjetaStat etiqueta="Beneficiarios" valor={resumen.total} />
-          </div>
-          <Progress value={resumen.porcentaje} className="mt-3" />
-        </section>
+      <h1 className="mb-4 font-heading text-xl font-semibold text-foreground">
+        Resumen
+      </h1>
 
-        {/* Pregunta 2: ¿qué se está agotando? */}
-        <section>
-          <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-            ¿Qué se está agotando?
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            <TarjetaStat
-              etiqueta="Referencias agotadas"
-              valor={resumen.agotadas}
-              tono={resumen.agotadas > 0 ? "peligro" : "neutro"}
-            />
-            <TarjetaStat
-              etiqueta="Por agotarse (< 20%)"
-              valor={resumen.porAgotarse}
-              tono={resumen.porAgotarse > 0 ? "advertencia" : "neutro"}
-            />
-          </div>
-          <Button asChild variant="link" className="mt-1 h-auto p-0">
-            <Link href="/kidotoy/inventario">
-              Ver inventario por edad y género
-              <ArrowRight className="ml-1 size-3.5" aria-hidden />
+      {/* Rompe la jornada y nadie entra a Carpas todos los días: se ve aquí. */}
+      {sinCarpa.length > 0 && (
+        <Alert variant="destructive" className="mb-4">
+          <TriangleAlert aria-hidden />
+          <AlertTitle>
+            {sinCarpa.length}{" "}
+            {sinCarpa.length === 1
+              ? "referencia sin carpa"
+              : "referencias sin carpa"}
+          </AlertTitle>
+          <AlertDescription>
+            Esos juguetes no se podrán entregar el día del evento hasta
+            asignarlos.{" "}
+            <Link
+              href="/kidotoy/carpas"
+              className="font-medium text-destructive underline underline-offset-2"
+            >
+              Asignar en Carpas
             </Link>
-          </Button>
-        </section>
+            .
+          </AlertDescription>
+        </Alert>
+      )}
 
-        {/* Pregunta 3: ¿quiénes no han entrado? */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-muted-foreground">
-              ¿Quiénes no han entrado?
-            </h2>
-            <Badge variant="secondary">
-              <Users2 className="mr-1 size-3.5" aria-hidden />
-              {pendientes.length} colaboradores
-            </Badge>
-          </div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        {/* Columna principal */}
+        <div className="space-y-4 lg:col-span-2">
+          {/* ¿Cuánto falta? — el avance domina */}
           <Card>
-            <CardHeader className="py-3">
-              <CardTitle className="text-base">
-                Colaboradores con hijos sin elegir
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {pendientes.length === 0 ? (
-                <p className="p-4 text-sm text-muted-foreground">
-                  Todos los colaboradores completaron su selección.
-                </p>
-              ) : (
-                <ul className="divide-y">
-                  {pendientes.slice(0, 12).map((c) => (
-                    <li
-                      key={c.id}
-                      className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate font-medium">{c.nombre}</p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {c.area ?? "Sin área"} · CC {c.cedula}
-                        </p>
-                      </div>
-                      <Badge className="shrink-0 bg-warning text-warning-foreground hover:bg-warning">
-                        {c.pendientes} de {c.total}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
-              )}
+            <CardContent className="p-4">
+              <Kicker>¿Cuánto falta?</Kicker>
+              <div className="flex items-end gap-2">
+                <span className="text-4xl font-bold tabular-nums text-foreground">
+                  {resumen.porcentaje}%
+                </span>
+                <span className="pb-1 text-sm text-muted-foreground">
+                  de avance
+                </span>
+              </div>
+              <Progress value={resumen.porcentaje} className="mt-2 h-2" />
+              <div className="mt-4 grid grid-cols-3 gap-3 border-t pt-3">
+                <Cifra etiqueta="Confirmados" valor={resumen.confirmados} />
+                <Cifra
+                  etiqueta="Pendientes"
+                  valor={resumen.pendientes}
+                  tono="advertencia"
+                />
+                <Cifra etiqueta="Beneficiarios" valor={resumen.total} />
+              </div>
             </CardContent>
           </Card>
-          {pendientes.length > 12 && (
-            <p className="mt-2 text-xs text-muted-foreground">
-              Mostrando 12 de {pendientes.length}. Exporta desde Selecciones para
-              la lista completa.
-            </p>
-          )}
-        </section>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {/* Evolución */}
+            <Card>
+              <CardContent className="p-4">
+                <Kicker>Evolución de la campaña</Kicker>
+                <GraficaEvolucion dias={evolucion.dias} />
+              </CardContent>
+            </Card>
+
+            {/* ¿Qué se agota? + conclusión de cobertura (una línea, no el mapa) */}
+            <Card>
+              <CardContent className="space-y-3 p-4">
+                <Kicker>¿Qué se agota?</Kicker>
+                <div className="grid grid-cols-2 gap-3">
+                  <Cifra
+                    etiqueta="Referencias agotadas"
+                    valor={resumen.agotadas}
+                    tono={resumen.agotadas > 0 ? "peligro" : undefined}
+                  />
+                  <Cifra
+                    etiqueta="Por agotarse"
+                    valor={resumen.porAgotarse}
+                    tono={resumen.porAgotarse > 0 ? "advertencia" : undefined}
+                  />
+                </div>
+                <p className="border-t pt-3 text-sm text-foreground">
+                  <span className="text-muted-foreground">Cobertura: </span>
+                  {cobertura.criticos > 0 ? (
+                    <span className="font-semibold text-destructive">
+                      {cobertura.criticos}{" "}
+                      {cobertura.criticos === 1 ? "grupo no alcanza" : "grupos no alcanzan"}
+                    </span>
+                  ) : (
+                    <span className="font-medium text-success">
+                      todos los grupos alcanzan
+                    </span>
+                  )}
+                  {cobertura.ajustados > 0 && (
+                    <>
+                      {" · "}
+                      <span className="font-medium text-warning">
+                        {cobertura.ajustados} ajustados
+                      </span>
+                    </>
+                  )}
+                  .
+                </p>
+                {cobertura.sinReferencias > 0 && (
+                  <p className="flex items-start gap-1.5 rounded-md bg-warning/15 p-2 text-xs text-foreground">
+                    <Ban className="mt-0.5 size-3.5 shrink-0 text-warning" aria-hidden />
+                    <span>
+                      <span className="font-semibold">
+                        {cobertura.sinReferencias} de 28 grupos sin referencias
+                        asignadas.
+                      </span>{" "}
+                      Un niño de esos grupos entraría a un catálogo vacío. El
+                      catálogo actual es una muestra; falta surtir el resto antes
+                      de producción.
+                    </span>
+                  </p>
+                )}
+                <Link
+                  href="/kidotoy/inventario"
+                  className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+                >
+                  Ver rejilla de cobertura
+                  <ArrowRight className="ml-1 size-3.5" aria-hidden />
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* ¿Quiénes no han entrado? */}
+        <Card className="lg:col-span-1">
+          <CardContent className="p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <Kicker>¿Quiénes no han entrado?</Kicker>
+              <Badge variant="secondary" className="shrink-0">
+                <Users2 className="mr-1 size-3.5" aria-hidden />
+                {pendientes.length}
+              </Badge>
+            </div>
+            {pendientes.length === 0 ? (
+              <p className="py-4 text-sm text-muted-foreground">
+                Todos los colaboradores completaron su selección.
+              </p>
+            ) : (
+              <ul className="-mx-1 divide-y">
+                {pendientes.slice(0, 14).map((c) => (
+                  <li
+                    key={c.id}
+                    className="flex items-center justify-between gap-2 px-1 py-2 text-sm"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-foreground">
+                        {c.nombre}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {c.area ?? "Sin área"} · CC {c.cedula}
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-warning/15 px-2 py-0.5 text-xs font-semibold tabular-nums text-warning">
+                      {c.pendientes}/{c.total}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {pendientes.length > 14 && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Mostrando 14 de {pendientes.length}. Exporta desde Selecciones
+                para la lista completa.
+              </p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </ShellKidotoy>
   );

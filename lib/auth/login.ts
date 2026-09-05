@@ -5,11 +5,20 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   DOMINIO_COLABORADOR,
   MENSAJE_ACCESO_GENERICO,
+  MENSAJE_ACCESO_CORREO_GENERICO,
   type Rol,
 } from "./config";
 
 export interface EstadoAcceso {
   error: string | null;
+  /**
+   * Sesión abierta: el cliente navega. El acceso del COLABORADOR no redirige
+   * desde el servidor porque su entrada a "Mis beneficiarios" lleva la
+   * transición de bienvenida, y esa la tiene que disparar el cliente antes de
+   * navegar (ver `components/transicion/proveedor-transicion.tsx`). Los otros
+   * espacios siguen redirigiendo desde el servidor.
+   */
+  ok?: boolean;
 }
 
 /** IP del cliente, SOLO para auditoría (nunca para contar intentos). */
@@ -82,7 +91,7 @@ export async function accederColaborador(
   });
 
   if (!exitoso) return { error: MENSAJE_ACCESO_GENERICO };
-  redirect("/acceso/inicio?bienvenido=1");
+  return { error: null, ok: true };
 }
 
 /**
@@ -98,14 +107,14 @@ export async function accederConCorreo(
   destino: string,
 ): Promise<EstadoAcceso> {
   const correo = correoRaw.trim().toLowerCase();
-  if (!correo || !password) return { error: MENSAJE_ACCESO_GENERICO };
+  if (!correo || !password) return { error: MENSAJE_ACCESO_CORREO_GENERICO };
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithPassword({
     email: correo,
     password,
   });
-  if (error) return { error: MENSAJE_ACCESO_GENERICO };
+  if (error) return { error: MENSAJE_ACCESO_CORREO_GENERICO };
 
   const {
     data: { user },
@@ -113,7 +122,7 @@ export async function accederConCorreo(
   if (user?.app_metadata?.rol !== rolEsperado) {
     // Credenciales válidas pero de otro espacio: no se deja entrar aquí.
     await supabase.auth.signOut();
-    return { error: MENSAJE_ACCESO_GENERICO };
+    return { error: MENSAJE_ACCESO_CORREO_GENERICO };
   }
   redirect(`${destino}?bienvenido=1`);
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { notificar } from "@/lib/notificar";
+import { cn } from "@/lib/utils";
 
 /**
  * Copia el código de entrega REAL (sin espacios) al portapapeles y confirma con
@@ -31,13 +32,22 @@ export function BotonCopiarCodigo({
   }
 
   return (
-    <Button variant="outline" onClick={copiar} className={className}>
+    <Button
+      variant="outline"
+      onClick={copiar}
+      className={cn(
+        "transition-colors",
+        copiado &&
+          "border-success bg-success/10 text-success hover:bg-success/10 hover:text-success",
+        className,
+      )}
+    >
       {copiado ? (
         <Check className="mr-2 size-4" aria-hidden />
       ) : (
         <Copy className="mr-2 size-4" aria-hidden />
       )}
-      {copiado ? "Copiado" : "Copiar código"}
+      {copiado ? "¡Copiado!" : "Copiar código"}
     </Button>
   );
 }

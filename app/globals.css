@@ -36,12 +36,12 @@
     --accent: 205 100% 95%;            /* #E7F5FF azul claro */
     --accent-foreground: 214 82% 42%;  /* #1361C5 primario oscuro */
 
-    /* ---- Estados (colores Kidotoy como semánticos) ---- */
-    --destructive: 0 74% 56%;          /* #E23C3D rojo Kidotoy */
+    /* ---- Estados (colores Kidotoy como semánticos, hexes del manual) ---- */
+    --destructive: 0 78% 58%;          /* #E84141 rojo Kidotoy (Warm Red C) */
     --destructive-foreground: 0 0% 100%;
-    --success: 142 71% 45%;            /* #22C55E */
+    --success: 142 71% 45%;            /* #22C55E (verde de usabilidad, no de marca) */
     --success-foreground: 0 0% 100%;
-    --warning: 39 90% 51%;             /* #F4A612 amarillo Kidotoy */
+    --warning: 40 94% 52%;             /* #F8AB11 amarillo Kidotoy (Pantone 2010 C) */
     --warning-foreground: 0 0% 20%;
 
     /* ---- Bordes, campos, foco ---- */
@@ -51,13 +51,30 @@
 
     /* ---- Colores de marca Kidotoy (FIJOS, identidad; no van al panel de temas,
            como el logo). Se usan dentro de tarjetas, chips y celebraciones. ---- */
-    --primary-dark: 214 82% 42%;       /* #1361C5 */
     --primary-deep: 214 83% 26%;       /* #0B3A78 barra lateral admin */
-    --kido-turquesa: 184 78% 40%;      /* #16ABB6 */
-    --kido-rojo: 0 74% 56%;            /* #E23C3D */
-    --kido-amarillo: 39 90% 51%;       /* #F4A612 */
-    --kido-morado: 257 26% 56%;        /* #8373AC */
-    --kido-marino: 237 71% 22%;        /* #101460 */
+    /* Colores oficiales del manual de identidad Kidotoy (Pantone/HTML exactos). */
+    --kido-turquesa: 187 85% 43%;      /* #10B7CD (Pantone 3115 C) */
+    --kido-rojo: 0 78% 58%;            /* #E84141 (Warm Red C) */
+    --kido-amarillo: 40 94% 52%;       /* #F8AB11 (Pantone 2010 C) */
+    --kido-morado: 260 29% 58%;        /* #8974B3 (Pantone 2101 C) */
+    --kido-marino: 237 71% 22%;        /* #101460 (secundario) */
+
+    /* Tintes CLAROS de cada color de tarjeta, para la silueta del beneficiario.
+       Medidos del mockup: la silueta no es blanco traslúcido, es un tono más
+       claro y menos saturado del propio color de la tarjeta. */
+    --kido-turquesa-claro: 186 49% 80%; /* #B3E0E5 sobre turquesa */
+    --kido-morado-claro: 254 12% 72%;   /* #B4B0C1 sobre morado */
+    --kido-rojo-claro: 0 45% 82%;       /* #E9BDBD sobre rojo */
+    --kido-marino-claro: 237 25% 78%;   /* #B6B9D4 sobre marino */
+
+    /* ---- Azules institucionales del Acueducto (muestreados del mockup) ----
+       Fijos: son identidad, no pasan por el panel de temas. */
+    --acueducto-azul: 214 82% 42%;      /* #135EC3 panel del login */
+    --acueducto-azul-vivo: 211 99% 42%; /* #0167D5 titulares y tarjeta de credenciales */
+    --acueducto-lienzo: 180 43% 97%;    /* #F5FBFB blanco azulado del lienzo */
+    --acueducto-campo: 205 100% 75%;    /* #80C8FF borde claro de los campos sobre azul */
+    --acueducto-pildora: 207 55% 89%;   /* #D4E7F5 píldora "Regalos en alianza con" */
+    --gris-decorativo: 180 14% 91%;     /* #E6ECEC forma geométrica de fondo */
 
     /* ---- Tipografía. Display Fredoka (solo alegría), títulos Montserrat,
            cuerpo Inter. Las carga next/font en el layout. ---- */
@@ -98,11 +115,11 @@
     --accent: 214 40% 24%;
     --accent-foreground: 205 100% 90%;
 
-    --destructive: 0 74% 60%;
+    --destructive: 0 78% 62%;
     --destructive-foreground: 0 0% 100%;
     --success: 142 65% 45%;
     --success-foreground: 0 0% 100%;
-    --warning: 39 90% 51%;
+    --warning: 40 94% 52%;
     --warning-foreground: 0 0% 12%;
 
     --border: 214 24% 24%;

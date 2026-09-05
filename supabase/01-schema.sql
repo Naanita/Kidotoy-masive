@@ -16,6 +16,8 @@ create table empresas (
   ventana_fin     timestamptz,
   evento_fecha    date,
   evento_lugar    text,
+  evento_hora     text,  -- horario del evento (texto libre); NULO hasta que Kidotoy lo confirme
+
   activa          boolean not null default true,
   banner_demo     boolean not null default true,
   creado_en       timestamptz not null default now()

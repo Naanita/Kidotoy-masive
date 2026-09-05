@@ -13,7 +13,6 @@ import {
 import { Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { ToastBienvenida } from "@/components/estado/toast-bienvenida";
-import { BannerDemostracion } from "@/components/banner-demostracion";
 import { obtenerConfigPublica } from "@/lib/theme/config";
 import { construirEstiloTema } from "@/lib/theme/serialize";
 import "./globals.css";
@@ -86,7 +85,6 @@ export default async function RootLayout({
         {estiloTema && (
           <style dangerouslySetInnerHTML={{ __html: estiloTema }} />
         )}
-        {config.banner_demo && <BannerDemostracion />}
         {children}
         <Toaster />
         <Suspense fallback={null}>

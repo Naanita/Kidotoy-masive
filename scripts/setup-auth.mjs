@@ -37,10 +37,12 @@ const PERSONAL = [
 
 // Operarios de entrega, cada uno con su carpa. En producción se crean desde el
 // panel de Kidotoy; aquí van unos pocos para demostrar varios puestos a la vez.
+// Carpas alineadas al catálogo-muestra (grupos con referencias: 2/4/6/10). En
+// producción son 28 grupos; estas se re-mapean al llegar el catálogo completo.
 const OPERARIOS = [
-  { correo: "entrega@kidotoy.local", password: "Entrega#2026", nombre: "Operario Carpa 3", carpa: "Carpa edad 3" },
-  { correo: "carpa7@kidotoy.local", password: "Entrega#2026", nombre: "Operario Carpa 7", carpa: "Carpa edad 7" },
-  { correo: "carpa12@kidotoy.local", password: "Entrega#2026", nombre: "Operario Carpa 12", carpa: "Carpa edad 12" },
+  { correo: "entrega@kidotoy.local", password: "Entrega#2026", nombre: "Operario Carpa 4", carpa: "Carpa edad 4" },
+  { correo: "carpa7@kidotoy.local", password: "Entrega#2026", nombre: "Operario Carpa 6", carpa: "Carpa edad 6" },
+  { correo: "carpa12@kidotoy.local", password: "Entrega#2026", nombre: "Operario Carpa 10", carpa: "Carpa edad 10" },
 ];
 
 const admin = createClient(URL, SERVICE, {

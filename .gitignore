@@ -34,3 +34,4 @@ yarn-error.log*
 
 # artefactos de demostración (video del recorrido, previews de correo)
 /demo
+docs/diseno/catalogo-procesado/

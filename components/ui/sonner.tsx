@@ -34,14 +34,16 @@ export function Toaster() {
       }}
       toastOptions={{
         classNames: {
+          // Mismo gesto que las alertas: riel izquierdo como cápsula redondeada
+          // (`before:`), no un borde cuadrado. El color lo pone cada tipo.
           toast:
-            "group flex w-full items-center gap-3 rounded-md border border-border border-l-4 bg-card px-4 py-3 text-card-foreground shadow-lg",
+            "group relative flex w-full items-center gap-3 rounded-md border border-border bg-card py-3 pl-5 pr-4 text-card-foreground shadow-lg before:absolute before:left-2 before:top-3 before:bottom-3 before:w-1 before:rounded-full before:content-['']",
           title: "font-heading text-sm font-semibold text-foreground",
           description: "text-sm text-muted-foreground",
-          success: "!border-l-success",
-          error: "!border-l-destructive",
-          warning: "!border-l-warning",
-          info: "!border-l-primary",
+          success: "before:!bg-success",
+          error: "before:!bg-destructive",
+          warning: "before:!bg-warning",
+          info: "before:!bg-primary",
           closeButton: "text-muted-foreground",
         },
       }}

@@ -21,7 +21,7 @@ export default async function PaginaOperarios() {
 
   return (
     <ShellKidotoy>
-      <h1 className="mb-1 text-xl font-semibold">Operarios de entrega</h1>
+      <h1 className="mb-1 font-heading text-xl font-semibold text-foreground">Operarios de entrega</h1>
       <p className="mb-4 text-sm text-muted-foreground">
         Cuentas del personal de la jornada, cada una con su carpa.
       </p>

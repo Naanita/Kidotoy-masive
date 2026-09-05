@@ -3,20 +3,21 @@ import type { TemaTokens } from "./serialize";
 
 /**
  * Configuración pública de la empresa activa, leída con la anon key.
- * Es a propósito lo mínimo para pintar el login: marca visible, bandera de
- * banner y tokens de tema (el logo vive dentro de los tokens). Ni id ni slug
- * ni datos de negocio — ver la nota de seguridad en config_publica().
+ * Es a propósito lo mínimo para pintar el login: marca visible y tokens de tema
+ * (el logo vive dentro de los tokens). Ni id ni slug ni datos de negocio — ver
+ * la nota de seguridad en config_publica().
+ *
+ * `config_publica()` sigue devolviendo `banner_demo`, pero ya no se usa: la
+ * franja de "versión de demostración" se retiró de la interfaz.
  */
 export interface ConfigPublica {
   marca_nombre: string;
-  banner_demo: boolean;
   tokens: TemaTokens;
 }
 
 /** Valores por defecto cuando la base de datos aún no está disponible. */
 const CONFIG_POR_DEFECTO: ConfigPublica = {
   marca_nombre: "Kidotoy",
-  banner_demo: true,
   tokens: {},
 };
 
@@ -37,7 +38,6 @@ export async function obtenerConfigPublica(): Promise<ConfigPublica> {
     const cfg = data as Partial<ConfigPublica>;
     return {
       marca_nombre: cfg.marca_nombre?.trim() || "Kidotoy",
-      banner_demo: cfg.banner_demo ?? true,
       tokens: (cfg.tokens as TemaTokens) ?? {},
     };
   } catch {
