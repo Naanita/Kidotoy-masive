@@ -13,6 +13,11 @@
     "binding": "ASSETS"
   },
   "observability": { "enabled": true },
+  // Se mantiene la URL de workers.dev como respaldo del dominio propio.
+  "workers_dev": true,
+  // Dominio propio del piloto. La zona vaisy.app ya está en esta cuenta de
+  // Cloudflare, así que wrangler crea el registro DNS y emite el certificado.
+  "routes": [{ "pattern": "acueducto-kidotoy.vaisy.app", "custom_domain": true }],
   "triggers": {
     // Horas en UTC; Bogotá es UTC-5.
     // 09:00 UTC = 04:00 Bogotá -> keepalive contra la pausa de Supabase.
