@@ -35,3 +35,7 @@ yarn-error.log*
 # artefactos de demostración (video del recorrido, previews de correo)
 /demo
 docs/diseno/catalogo-procesado/
+
+# despliegue del piloto en Cloudflare (desechable al migrar al VPS)
+.open-next/
+.dev.vars

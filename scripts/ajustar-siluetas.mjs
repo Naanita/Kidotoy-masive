@@ -10,6 +10,13 @@
  *
  * Es idempotente: si el viewBox ya está ceñido, no cambia nada. Se ejecuta a
  * mano cuando llegan siluetas nuevas: `node scripts/ajustar-siluetas.mjs`.
+ *
+ * ADEMÁS emite `components/colaborador/siluetas-datos.ts` con los dos SVG ya
+ * limpios como texto. La aplicación importa ESE módulo, no lee `public/`:
+ * hay entornos de despliegue sin sistema de archivos real (Cloudflare Workers
+ * publica `public/` como assets, fuera del bundle del servidor), y una lectura
+ * en disco allí revienta "Mis beneficiarios" en producción sin fallar en el
+ * build. Con el SVG como módulo, el mismo código sirve en cualquier plataforma.
  */
 import sharp from "sharp";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -64,3 +71,42 @@ for (const nombre of ARCHIVOS) {
     `${nombre}: ${vb[1]} -> ${nuevo.join(" ")} (proporción ${r(nuevo[2] / nuevo[3])})`,
   );
 }
+
+// ---------------------------------------------------------------------
+//  Módulo TS con los SVG ya limpios, para que la app no lea el disco.
+// ---------------------------------------------------------------------
+const limpiar = (svg) =>
+  svg
+    // El manifiesto C2PA son ~8 KB de base64 por archivo que se repetirían en
+    // cada tarjeta del HTML. El archivo en disco queda intacto.
+    .replace(/<metadata>[\s\S]*?<\/metadata>/, "")
+    .replace(/\s(?:width|height|preserveAspectRatio)="[^"]*"/g, "")
+    // xMinYMax ancla abajo a la izquierda: lo que se sale de la tarjeta es la
+    // parte de abajo, como en el mockup.
+    .replace("<svg", '<svg preserveAspectRatio="xMinYMax meet"')
+    .replace(/\s+/g, " ")
+    .trim();
+
+const nino = limpiar(readFileSync("public/siluetas/silueta-nino.svg", "utf8"));
+const nina = limpiar(readFileSync("public/siluetas/silueta-nina.svg", "utf8"));
+
+writeFileSync(
+  "components/colaborador/siluetas-datos.ts",
+  `// GENERADO por scripts/ajustar-siluetas.mjs. No editar a mano.
+// Fuente: public/siluetas/silueta-ni{no,na}.svg
+//
+// Los SVG viven aquí como texto y no se leen del disco a propósito: hay
+// plataformas de despliegue sin sistema de archivos real para el servidor
+// (Cloudflare Workers publica public/ como assets, fuera del bundle), y una
+// lectura en disco allí rompe "Mis beneficiarios" en producción sin dar error
+// en el build. Regenerar con: node scripts/ajustar-siluetas.mjs
+
+export const SILUETA_NINO = ${JSON.stringify(nino)};
+
+export const SILUETA_NINA = ${JSON.stringify(nina)};
+`,
+  "utf8",
+);
+console.log(
+  `components/colaborador/siluetas-datos.ts: niño ${(nino.length / 1024).toFixed(1)} KB, niña ${(nina.length / 1024).toFixed(1)} KB`,
+);

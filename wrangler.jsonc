@@ -1,0 +1,22 @@
+{
+  // Configuración del Worker del PILOTO. Desechable: se borra al migrar al VPS.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kidotoy-piloto",
+  // Apunta al entrypoint PROPIO, no al generado: es lo que permite añadir los
+  // cron. Ver custom-worker.ts.
+  "main": "./custom-worker.ts",
+  // >= 2025-09-01 para tener node:fs (lo referencia el paquete qrcode).
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": { "enabled": true },
+  "triggers": {
+    // Horas en UTC; Bogotá es UTC-5.
+    // 09:00 UTC = 04:00 Bogotá -> keepalive contra la pausa de Supabase.
+    // 12:30 UTC = 07:30 Bogotá -> resumen diario a Kidotoy.
+    "crons": ["0 9 * * *", "30 12 * * *"]
+  }
+}

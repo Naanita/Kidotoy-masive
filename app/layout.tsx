@@ -17,9 +17,10 @@ import { obtenerConfigPublica } from "@/lib/theme/config";
 import { construirEstiloTema } from "@/lib/theme/serialize";
 import "./globals.css";
 
-// El tema y el banner viven en la BD y cambian desde /dev. Revalidar cada
-// 5 min mantiene las páginas casi estáticas y refleja los cambios sin redeploy.
-export const revalidate = 300;
+// Sin ISR a propósito: `revalidate` obligaría a montar una caché incremental
+// externa (un bucket R2) en el despliegue sobre Cloudflare Workers, y a esta
+// escala no aporta nada. Como efecto secundario bueno, los cambios de tema y
+// marca desde /dev/tema se ven al instante en vez de esperar 5 minutos.
 
 // Fuentes por defecto (identidad Acueducto/Kidotoy): se precargan.
 // Inter (cuerpo), Montserrat (títulos), Fredoka (display, momentos de alegría).
