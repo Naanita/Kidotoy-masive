@@ -52,13 +52,16 @@ export function TarjetaProducto({
         )}
       </div>
 
+      {/* Solo el NOMBRE. La ficha de Kidotoy ya trae impresos el SKU, el nombre y
+          las medidas, y repetirlos debajo era ruido: el colaborador no necesita
+          información de bodega para escoger un regalo. `producto.descripcion`
+          hoy contiene únicamente medidas y empaque, así que se omite entera.
+          La altura mínima del título se conserva para que los botones de toda la
+          rejilla queden alineados aunque los nombres midan distinto. */}
       <div className="flex flex-col p-4">
         <h3 className="line-clamp-2 min-h-[2.75rem] font-display text-base font-semibold leading-snug text-foreground">
           {producto.nombre}
         </h3>
-        <p className="mt-1.5 line-clamp-2 min-h-[2.5rem] text-sm text-muted-foreground">
-          {producto.descripcion}
-        </p>
         <div className="pt-3">
           {puedeElegir ? (
             <Button asChild className="h-11 w-full">
